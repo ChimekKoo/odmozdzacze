@@ -4,25 +4,22 @@ from pymongo import MongoClient
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from json import loads
 from random import randint
 from datetime import datetime
 from magic import Magic
 
-import constants
+from constants import BASE_URL
+from cred import get_cred
 
 
-cred_file_obj = open("cred.json", "r")
-cred = loads(cred_file_obj.read())
-cred_file_obj.close()
+cred = get_cred()
 
 smtp_cred = cred["smtp"]
-
 
 app = Flask(__name__)
 app.secret_key = cred["secret_key"]
 
-mongo_client = MongoClient(cred["mongodb"]["url"])
+mongo_client = MongoClient(cred["mongodb_url"])
 db = mongo_client["odmozdzacze"]
 reports_col = db["reports"]
 categories_col = db["categories"]
@@ -54,7 +51,8 @@ def check_if_logged():
     else:
         if not session["logged"]:
             logged = False
-        logged = True
+        else:
+            logged = True
     return logged
 
 
@@ -91,12 +89,12 @@ def error_404(error):
             "description": "Resource not found - check url."
         })
     else:
-        return render_template("404.html", error=error, admin=check_if_logged(), url=constants.BASE_URL)
+        return render_template("404.html", error=error, admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/")
 def index():
-    return render_template("index.html", admin=check_if_logged(), url=constants.BASE_URL)
+    return render_template("index.html", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/images/<image>")
@@ -123,7 +121,7 @@ def fontello_css_fontellocss():
 
 @app.route("/about")
 def about():
-    return render_template("about.html", admin=check_if_logged(), url=constants.BASE_URL)
+    return render_template("about.html", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/ranking")
@@ -135,7 +133,7 @@ def ranking():
         if ranking_report["verified"]:
             ranking_reports.append(ranking_report)
 
-    return render_template("ranking.html", ranking_reports=ranking_reports, url=constants.BASE_URL)
+    return render_template("ranking.html", ranking_reports=ranking_reports, url=BASE_URL)
 
 
 @app.route("/browse")
@@ -168,17 +166,17 @@ def browse():
     if len(elements) > per_page:
         elements = elements[:per_page]
 
-    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged(), elements_len=len(elements), url=constants.BASE_URL)
+    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged(), elements_len=len(elements), url=BASE_URL)
 
 
 @app.route("/developer")
 def developer():
-    return render_template("developer.html", admin=check_if_logged(), url=constants.BASE_URL)
+    return render_template("developer.html", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html", admin=check_if_logged(), url=constants.BASE_URL)
+    return render_template("contact.html", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/showreport/<reportid>")
@@ -186,7 +184,7 @@ def show_report(reportid):
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
-    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), url=constants.BASE_URL)
+    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/verifyreport/<reportid>")
@@ -251,7 +249,7 @@ def edit_report(reportid):
                     result = cursor_to_list(reports_col.find({"id": reportid}))
                     if len(result) != 1:
                         abort(404)
-                    return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", reportdict=result[0], admin=check_if_logged(), url=constants.BASE_URL)
+                    return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
                 else:
 
                     reports_col.update_one({"id": reportid}, {
@@ -269,7 +267,7 @@ def edit_report(reportid):
                     if len(result) != 1:
                         abort(404)
 
-                    return render_template("edit_report.html", status="Edytowano pomyślnie.", categories=categories, reportdict=result[0], admin=check_if_logged(), url=constants.BASE_URL)
+                    return render_template("edit_report.html", status="Edytowano pomyślnie.", categories=categories, reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
 
             else:
 
@@ -279,7 +277,7 @@ def edit_report(reportid):
                 if len(result) != 1:
                     abort(404)
 
-                return render_template("edit_report.html", categories=categories, reportdict=result[0], admin=check_if_logged(), url=constants.BASE_URL)
+                return render_template("edit_report.html", categories=categories, reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/report", methods=["GET", "POST"])
@@ -290,7 +288,7 @@ def report():
          or request.form["name"] == ""\
          or request.form["content"] == ""\
          or request.form["email"] == "":
-            return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=constants.BASE_URL)
+            return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=BASE_URL)
         else:
 
             report_date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -334,14 +332,14 @@ def report():
 
             categories = cursor_to_list(categories_col.find(), "name")
 
-            return render_template("report.html", status="Zgłoszono pomyślnie.", categories=categories, admin=check_if_logged(), reportdict=blank_reportdict, url=constants.BASE_URL)
+            return render_template("report.html", status="Zgłoszono pomyślnie.", categories=categories, admin=check_if_logged(), reportdict=blank_reportdict, url=BASE_URL)
 
     elif request.method == "GET":
 
         reportdict = request_args_to_dict({"category": "", "name": "", "content": "", "email": ""})
 
         categories = cursor_to_list(categories_col.find(), "name")
-        return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict, url=constants.BASE_URL)
+        return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict, url=BASE_URL)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -349,7 +347,7 @@ def login():
     if request.method == "POST":
 
         if request.form["login"] == "" or request.form["password"] == "":
-            return render_template("login.html", error="Nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=constants.BASE_URL)
+            return render_template("login.html", error="Nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=BASE_URL)
         else:
             username = request.form["login"]
             password = request.form["password"]
@@ -361,7 +359,7 @@ def login():
                 result_list.append(j)
 
             if len(result_list) != 1:
-                return render_template("login.html", error="Nieprawidłowy login lub hasło.", admin=check_if_logged(), url=constants.BASE_URL)
+                return render_template("login.html", error="Nieprawidłowy login lub hasło.", admin=check_if_logged(), url=BASE_URL)
 
             session["logged"] = True
 
@@ -371,7 +369,7 @@ def login():
         if check_if_logged():
             return redirect(url_for("index"))
         else:
-            return render_template("login.html", admin=check_if_logged(), url=constants.BASE_URL)
+            return render_template("login.html", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/logout")
