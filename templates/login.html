@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} - Zaloguj jako administrator{% endblock %}
+{% block content %}
+
+    <header class="w3-container w3-xlarge w3-padding-16">Zaloguj się jako administrator strony</header>
+
+    <br>
+
+    {% if error is defined %}
+    <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+        <b>{{ error }}</b>
+    </div>
+    <br>
+    {% endif %}
+
+    {% if status is defined %}
+    <div class="w3-panel w3-leftbar w3-pale-green w3-padding-16">
+        <b>{{ status }}</b>
+    </div>
+    <br>
+    {% endif %}
+
+    <form action="{{ url }}/login" method="post">
+        <input class="w3-input w3-light-gray w3-border" type="text" name="login" placeholder="Login" style="width:40%" required><br>
+        <input class="w3-input w3-light-gray w3-border" type="password" name="password" placeholder="Hasło" style="width:40%" required><br>
+        <br>
+        <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" value="Zaloguj"><br>
+    </form>
+{% endblock %}

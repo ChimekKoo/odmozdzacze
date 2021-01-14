@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} - Ranking{% endblock %}
+
+{% block content %}
+    <div class="w3-container">
+        <header class="w3-container w3-xlarge w3-padding-32 w3-center" style="letter-spacing:3px"><b>RANKING ODMÓŻDŻACZY</b></header>
+        <br>
+        <table class="w3-table w3-table-all w3-large" style="width:50%; margin-left:auto; margin-right:auto">
+            {% for reportdict in ranking_reports %}
+                <tr>
+                    <td><a href="{{ url }}/showreport/{{ reportdict['id'] }}">{{ reportdict['name'] }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

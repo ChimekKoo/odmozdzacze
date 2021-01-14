@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %} - Przeglądaj zgłoszenia{% endblock %}
+
+{% block content %}
+    <form action="/browse" method="get" id="search-form">
+
+        <div class="w3-bar">
+            <input class="w3-bar-item w3-input w3-border w3-border-dark-grey w3-padding w3-round w3-light-grey w3-margin-right" type="text" placeholder="Szukaj odmóżdżaczy..." name="q" style="width:60%">
+            <button class="w3-bar-item w3-button w3-round w3-border w3-border-dark-grey w3-text-black w3-light-grey" onclick="submit_form()"><i class="fa fa-search"></i><span class="w3-padding">Szukaj</span></button>
+        </div>
+
+        <br>
+
+        <div class="w3-bar">
+            <select class="w3-bar-item w3-margin-right w3-select w3-round w3-border w3-border-dark-grey" name="category">
+                <option value="" selected>Wszystkie kategorie</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <div class="w3-bar-item w3-container">
+                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="all" checked>
+                <label class="w3-margin-right">Wszystkie</label>
+            </div>
+
+            <div class="w3-bar-item w3-container">
+                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="verified">
+                <label class="w3-margin-right">Zweryfikowane</label>
+            </div>
+
+            <div class="w3-bar-item w3-container">
+                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="unverified">
+                <label class="w3-margin-right">Niezweryfikowane</label>
+            </div>
+
+            <input class="w3-bar-item w3-input w3-round w3-border w3-border-dark-grey w3-light-grey w3-right" type="number" id="per-page-input" name="per-page" value="10" style="width:5%">
+            <label class="w3-bar-item w3-right" for="per-page-input">Wyników na stronę:</label>
+        </div>
+    </form>
+    <hr>
+    {% if elements_len != 0 %}
+        <table class="w3-table-all w3-margin-top" id="elements_table">
+        <tr>
+          <th><b>Nazwa</b></th>
+          <th><b>Kategoria</b></th>
+        </tr>
+        {% for element in elements %}
+            <tr>
+              <td>
+                  <a href="{{ url }}/showreport/{{ element["id"] }}">{{ element["name"] }}</a>&nbsp;
+                  {% if element["verified"] == true %}
+                      <div class="w3-tag w3-white w3-border w3-border-green w3-round w3-text-green">Zweryfikowany</div>
+                  {% endif %}
+              </td>
+              <td>{{ element["category"] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <div class="w3-container w3-center">
+            <div class="w3-container">
+                <img src="{{ url }}/images/not_found_element_icon" alt="" width="160px" height="160px">
+            </div>
+            <div class="w3-container w3-margin-top">
+                <span class="w3-xlarge w3-text-dark-gray" style="letter-spacing:1px">Nie znaleziono</span>
+            </div>
+        </div>
+    {% endif %}
+
+    <script type="text/javascript">
+        function submit_form() {
+            document.getElementById("search-form").submit;
+        }
+    </script>
+
+{% endblock %}

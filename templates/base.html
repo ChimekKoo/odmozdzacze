@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Odmóżdżacze{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ url }}/images/odmozdzacze_logo">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position:fixed">
+        <span>
+            Używając naszego serwisu, zgadzasz się na korzystanie z ciasteczek. Wykorzystujemy je w celu gromadzenia danych o odwiedzających wykorzystując usługę Google Analytics (<a href="https://policies.google.com/technologies/partner-sites" target="_blank">Więcej informacji</a>)
+            oraz umieszczenia widgetu pozwalającego na kontakt z działem pomocy. Jeśli nie chcesz aby strona zapisywała pliki cookie, możesz zmienić to w ustawieniach przeglądarki.
+        </span>
+        <button class="w3-button w3-light-grey w3-border w3-border-black w3-text-black w3-round w3-hover-light-grey w3-hover-border-green w3-hover-text-green" onclick="onClickCloseCookiesPopup()" style="margin-left:20px">Zamknij</button>
+    </div>
+
+    <!-- Background pattern from Toptal Subtle Patterns -->
+
+    <div class="w3-container w3-padding-32 w3-center w3-border-bottom" style="background-image:url({{ url }}/images/light_noise_diagonal)">
+
+        <div class="w3-container w3-padding">
+            <img src="{{ url }}/images/odmozdzacze_logo" width="150px" height="150px">
+        </div>
+
+        <header class="w3-container w3-xlarge w3-padding" style="letter-spacing:5px">ODMÓŻDŻACZE</header>
+    </div>
+
+    <div class="w3-bar w3-blue-gray w3-border" style="font-size:16px">
+        <a href="{{ url }}/" class="w3-bar-item w3-button w3-hover-blue w3-padding" style="width:10%"><i class="fa fa-home"></i> Home</a>
+        <a href="{{ url }}/about" class="w3-bar-item w3-button w3-padding" style="width:10%">O stronie</a>
+        <a href="{{ url }}/report" class="w3-bar-item w3-button w3-padding" style="width:10%">Zgłoś</a>
+        <a href="{{ url }}/ranking" class="w3-bar-item w3-button w3-padding" style="width:10%">Ranking</a>
+        <a href="{{ url }}/browse" class="w3-bar-item w3-button w3-padding" style="width:10%">Przeglądaj</a>
+        <a href="{{ url }}/developer" class="w3-bar-item w3-button w3-padding" style="width:10%">Deweloper</a>
+        <a href="{{ url }}/contact" class="w3-bar-item w3-button w3-padding" style="width:10%">Kontakt</a>
+        {% if admin == false %}
+            <a href="{{ url }}/login" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
+                <img src="{{ url }}/images/user_icon" alt="Logowanie" width="24px" height="24px">
+            </a>
+        {% else %}
+            <a href="{{ url }}/logout" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
+                <img src="{{ url }}/images/logout_icon" alt="Wyloguj" width="24px" height="24px">
+            </a>
+        {% endif %}
+        <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
+            <img src="{{ url }}/images/discord_logo" alt="Discord" width="24px" height="24px">
+        </a>
+        <a href="http://github.com/odmozdzacze" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
+            <img src="{{ url }}/images/github_logo" alt="GitHub" width="24px" height="24px">
+        </a>
+        <a href="http://odmozdzacze.tawk.help" target="_blank" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
+            <img src="{{ url }}/images/help_icon" alt="Help center" width="24px" height="24px">
+        </a>
+    </div>
+
+    <!-- Background pattern from Toptal Subtle Patterns -->
+
+    <div class="w3-container" style="width:100%; background-image:url({{ url }}/images/light_grey_terrazzo)">
+        <div class="w3-container w3-white w3-margin-left w3-margin-right w3-padding-32">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <footer class="w3-container w3-dark-gray w3-padding-32 w3-monospace">
+        <table class="w3-table">
+          <tr>
+            <td>Copyright &copy; 2021 <a href="https://github.com/chimekkoo" target="_blank">ChimekKoo</a> and <a href="#">Ynin</a></td>
+            <td><a href="{{ url }}/files/odmozdzacze_logo" class="w3-button w3-dark-gray w3-border w3-border-pale-blue"><span class="w3-text-pale-blue">Pobierz logo</span></a></td>
+          </tr>
+        </table>
+    </footer>
+
+    <script type="text/javascript">
+        function onClickCloseCookiesPopup() {
+            var popup = document.getElementById("cookies-popup");
+            popup.style.display = "none";
+        }
+    </script>
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/5f8b0f9cf91e4b431ec54b7f/default';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+      })();
+    </script>
+    <!--End of Tawk.to Script-->
+
+</body>
+</html>

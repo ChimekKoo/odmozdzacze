@@ -1,0 +1,5 @@
+.idea/
+venv/
+__pycache__/
+cred.json
+.DS_Store
