@@ -261,33 +261,33 @@ def report():
                 "verified": False
             })
 
-            msg = MIMEMultipart("alternative")
-            msg['Subject'] = "Wiadomość od Odmóżdżacze"
-            msg['From'] = smtp_cred["login"]
-            msg['To'] = request.form["email"]
-            msg.attach(MIMEText(f"""
-            Odmóżdżacz zgłoszony!
-
-            ID: {report_id}
-            Czas: {report_date_time}
-            Kategoria: {request.form["category"]}
-            Nazwa: {request.form["name"]}
-            Opis: {request.form["content"]}
-            """))
-
-            smtp_obj = SMTP(smtp_cred["host"], smtp_cred["port"])
-
-            smtp_obj.ehlo()
-            smtp_obj.starttls()
-            smtp_obj.login(smtp_cred["login"], smtp_cred["password"])
-            smtp_obj.sendmail(smtp_cred["login"], request.form["email"], msg.as_string())
-            smtp_obj.quit()
-
-            del smtp_obj
+            # msg = MIMEMultipart("alternative")
+            # msg['Subject'] = "Wiadomość od Odmóżdżacze"
+            # msg['From'] = smtp_cred["login"]
+            # msg['To'] = request.form["email"]
+            # msg.attach(MIMEText(f"""
+            # Odmóżdżacz zgłoszony!
+            #
+            # ID: {report_id}
+            # Czas: {report_date_time}
+            # Kategoria: {request.form["category"]}
+            # Nazwa: {request.form["name"]}
+            # Opis: {request.form["content"]}
+            # """))
+            #
+            # smtp_obj = SMTP(smtp_cred["host"], smtp_cred["port"])
+            #
+            # smtp_obj.ehlo()
+            # smtp_obj.starttls()
+            # smtp_obj.login(smtp_cred["login"], smtp_cred["password"])
+            # smtp_obj.sendmail(smtp_cred["login"], request.form["email"], msg.as_string())
+            # smtp_obj.quit()
+            #
+            # del smtp_obj
 
             categories = cursor_to_list(categories_col.find(), "name")
 
-            return render_template("report.html", status="Zgłoszono pomyślnie.", categories=categories, admin=check_if_logged(), reportdict=blank_reportdict, url=BASE_URL)
+            return redirect(url_for("show_report", reportid=report_id))
 
     elif request.method == "GET":
 
