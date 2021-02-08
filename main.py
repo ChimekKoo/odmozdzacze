@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from datetime import datetime
 from magic import Magic
 
-from constants import BASE_URL
+from constants import *
 from cred import get_cred
 from utils import *
 
@@ -38,7 +38,7 @@ blank_reportdict = {
 
 @app.errorhandler(404)
 def error_404(error):
-    if request.url.startswith("/api"):
+    if request.url.startswith(API_ENTRYPOINT):
         return make_response({
             "error": "404 Not Found",
             "description": "Resource not found - check url."
