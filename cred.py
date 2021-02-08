@@ -1,17 +1,20 @@
 from os import environ
 from json import loads
 
-from constants import CRED_OR_ENVIRON
+from constants import CRED_OR_ENVIRON, CRED_FILE_NAME
 
 
 def get_cred():
 
     if CRED_OR_ENVIRON == "cred":
-
-        with open("cred.json", "r") as cred_file_obj:
-            cred = loads(cred_file_obj.read())
-            cred_file_obj.close()
-        return cred
+        try:
+            with open(CRED_FILE_NAME, "r") as cred_file_obj:
+                cred = loads(cred_file_obj.read())
+                cred_file_obj.close()
+            return cred
+        except FileNotFoundError:
+            print(CRED_FILE_NAME, "file does not exists (FileNotFoundError).")
+            exit(1)
 
     elif CRED_OR_ENVIRON == "environ":
 

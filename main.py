@@ -222,7 +222,7 @@ def edit_report(reportid):
                     if len(result) != 1:
                         abort(404)
 
-                    return render_template("edit_report.html", status="Edytowano pomyślnie.", categories=categories, reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
+                    return redirect(url_for("show_report", reportid=reportid))
 
             else:
 
