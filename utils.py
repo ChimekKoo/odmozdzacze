@@ -1,5 +1,5 @@
 from random import randint
-from main import session, request
+from main import request, session
 
 
 def generate_id(ids):

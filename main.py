@@ -11,11 +11,6 @@ from constants import *
 from cred import get_cred
 from utils import *
 
-if url_for("index").endswith("/"):
-    BASE_URL = url_for("index")[:1]
-else:
-    BASE_URL = url_for("index")
-
 
 cred = get_cred()
 
