@@ -1,15 +1,20 @@
-from flask import Flask, render_template, send_file, request, redirect, url_for, abort, session, make_response
+from flask import Flask, render_template, send_file, request, redirect, url_for, abort, session, jsonify
 from os.path import isfile
 from pymongo import MongoClient
-from smtplib import SMTP
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+# from smtplib import SMTP
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.text import MIMEText
 from datetime import datetime
 from magic import Magic
 
 from constants import *
 from cred import get_cred
 from utils import *
+
+if url_for("index").endswith("/"):
+    BASE_URL = url_for("index")[:1]
+else:
+    BASE_URL = url_for("index")
 
 
 cred = get_cred()
@@ -28,23 +33,15 @@ admins_col = db["admins"]
 magic = Magic(mime=True)
 
 
-blank_reportdict = {
-    "category": "",
-    "name": "",
-    "content": "",
-    "email": ""
-}
-
-
 @app.errorhandler(404)
 def error_404(error):
     if request.url.startswith(API_ENTRYPOINT):
-        return make_response({
+        return jsonify({
             "error": "404 Not Found",
             "description": "Resource not found - check url."
-        })
+        }), 404
     else:
-        return render_template("404.html", error=error, admin=check_if_logged(), url=BASE_URL)
+        return render_template("error.html", error_num="404", error_name="Nie znaleziono", admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/")
@@ -82,13 +79,8 @@ def about():
 @app.route("/ranking")
 def ranking():
     result = cursor_to_list(reports_col.find())
-    ranking_reports = []
 
-    for ranking_report in result:
-        if ranking_report["verified"]:
-            ranking_reports.append(ranking_report)
-
-    return render_template("ranking.html", ranking_reports=ranking_reports, url=BASE_URL)
+    return render_template("ranking.html", ranking_reports=result, url=BASE_URL)
 
 
 @app.route("/browse")
@@ -337,4 +329,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="8000", debug=True)
+    app.run(host="0.0.0.0", port="8000", debug=DEBUG)
