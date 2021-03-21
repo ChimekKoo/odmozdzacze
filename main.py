@@ -53,17 +53,12 @@ def images(image):
 
 
 @app.route("/files/<filename>")
-def files_odmozdzacze_logo(filename):
+def files(filename):
     if isfile("templates/files/" + filename):
         magic_mimetype = magic.from_file("templates/files/" + filename)
         return send_file("templates/files/" + filename, mimetype=magic_mimetype)
     else:
         abort(404)
-
-
-@app.route("/fontello/css/fontello.css")
-def fontello_css_fontellocss():
-    return send_file("templates/fontello/css/fontello.css")
 
 
 @app.route("/about")
@@ -81,34 +76,57 @@ def ranking():
 @app.route("/browse")
 def browse():
 
-    request_args = request_args_to_dict({"q": "", "category": "", "per-page": "10", "verified": "on"})
+    # request_args = request_args_to_dict({"q": "", "category": "", "per-page": "10", "verified": "on"})
+    #
+    # if request_args["verified"] == "verified":
+    #     request_args["verified"] = True
+    # elif request_args["verified"] == "unverified":
+    #     request_args["verified"] = False
+    # else:
+    #     request_args["verified"] = ""
+    #
+    # request_args["q"] = request_args["q"].lower()
+    #
+    # elements = cursor_to_list(reports_col.find({
+    #     "name": request_args["q"],
+    #     "category": request_args["category"],
+    #     "verified": request_args["verified"]
+    # }))
+    #
+    # per_page = str(request_args["per-page"])
+    #
+    # try:
+    #     per_page = int(per_page)
+    # except ValueError:
+    #     per_page = len(elements)
+    #
+    # if len(elements) > per_page:
+    #     elements = elements[:per_page]
 
-    if request_args["verified"] == "verified":
-        request_args["verified"] = True
-    elif request_args["verified"] == "unverified":
-        request_args["verified"] = False
-    else:
-        request_args["verified"] = ""
+    query = {}
+    for arg in ["q", "category", "verified", "per-page"]:
+        try:
+            request.args[arg]
+        except NameError:
+            pass
+        else:
+            if request.args[arg] != "":
 
-    request_args["q"] = request_args["q"].lower()
+                if arg == "per-page":
+                    per_page = request.args[arg]
+                elif arg == "verified":
+                    if request.args[arg] == "verified":
+                        query[arg] = True
+                    elif request.args[arg] == "unverified":
+                        query[arg] = False
+                    else:
+                        continue
+                else:
+                    query[arg] = request.args[arg]
 
-    elements = cursor_to_list(reports_col.find({
-        "name": request_args["q"],
-        "category": request_args["category"],
-        "verified": request_args["verified"]
-    }))
+    elements = cursor_to_list(reports_col.find(query))
 
-    per_page = str(request_args["per-page"])
-
-    try:
-        per_page = int(per_page)
-    except ValueError:
-        per_page = len(elements)
-
-    if len(elements) > per_page:
-        elements = elements[:per_page]
-
-    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged(), elements_len=len(elements), url=BASE_URL)
+    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged(), url=BASE_URL)
 
 
 @app.route("/developer")

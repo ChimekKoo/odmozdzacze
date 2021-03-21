@@ -40,7 +40,7 @@
         </div>
     </form>
     <hr>
-    {% if elements_len != 0 %}
+    {% if elements|length != 0 %}
         <table class="w3-table-all w3-margin-top" id="elements_table">
         <tr>
           <th><b>Nazwa</b></th>
@@ -49,7 +49,7 @@
         {% for element in elements %}
             <tr>
               <td>
-                  <a href="{{ url }}/showreport/{{ element["id"] }}">{{ element["name"] }}</a>&nbsp;
+                  <a href="{{ url }}/showreport/{{ element['id'] }}">{{ element["name"] }}</a>&nbsp;
                   {% if element["verified"] == true %}
                       <div class="w3-tag w3-white w3-border w3-border-green w3-round w3-text-green">Zweryfikowany</div>
                   {% endif %}
