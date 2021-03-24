@@ -20,7 +20,7 @@
     <br>
     {% endif %}
 
-    <form action="{{ url }}/login" method="post">
+    <form action="{{ url_for('login') }}" method="post">
         <input class="w3-input w3-light-gray w3-border" type="text" name="login" placeholder="Login" style="width:40%" required><br>
         <input class="w3-input w3-light-gray w3-border" type="password" name="password" placeholder="Hasło" style="width:40%" required><br>
         <br>

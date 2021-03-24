@@ -36,41 +36,24 @@ def error_404(error):
             "description": "Resource not found - check url."
         }), 404
     else:
-        return render_template("error.html", error_num="404", error_name="Nie znaleziono", admin=check_if_logged(), url=BASE_URL)
+        return render_template("error.html", error_num="404", error_name="Nie znaleziono", admin=check_if_logged())
 
 
 @app.route("/")
 def index():
-    return render_template("index.html", admin=check_if_logged(), url=BASE_URL)
-
-
-@app.route("/images/<image>")
-def images(image):
-    if isfile(f"templates/images/{image}.png"):
-        return send_file(f"templates/images/{image}.png", mimetype="image/png")
-    else:
-        abort(404)
-
-
-@app.route("/files/<filename>")
-def files(filename):
-    if isfile("templates/files/" + filename):
-        magic_mimetype = magic.from_file("templates/files/" + filename)
-        return send_file("templates/files/" + filename, mimetype=magic_mimetype)
-    else:
-        abort(404)
+    return render_template("index.html", admin=check_if_logged())
 
 
 @app.route("/about")
 def about():
-    return render_template("about.html", admin=check_if_logged(), url=BASE_URL)
+    return render_template("about.html", admin=check_if_logged())
 
 
 @app.route("/ranking")
 def ranking():
     result = cursor_to_list(reports_col.find())
 
-    return render_template("ranking.html", ranking_reports=result, url=BASE_URL)
+    return render_template("ranking.html", ranking_reports=result)
 
 
 @app.route("/browse")
@@ -107,7 +90,7 @@ def browse():
     for arg in ["q", "category", "verified", "per-page"]:
         try:
             request.args[arg]
-        except NameError:
+        except KeyError:
             pass
         else:
             if request.args[arg] != "":
@@ -126,17 +109,17 @@ def browse():
 
     elements = cursor_to_list(reports_col.find(query))
 
-    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged(), url=BASE_URL)
+    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged())
 
 
 @app.route("/developer")
 def developer():
-    return render_template("developer.html", admin=check_if_logged(), url=BASE_URL)
+    return render_template("developer.html", admin=check_if_logged())
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html", admin=check_if_logged(), url=BASE_URL)
+    return render_template("contact.html", admin=check_if_logged())
 
 
 @app.route("/showreport/<reportid>")
@@ -144,7 +127,7 @@ def show_report(reportid):
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
-    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
+    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged())
 
 
 @app.route("/verifyreport/<reportid>")
@@ -209,7 +192,7 @@ def edit_report(reportid):
                     result = cursor_to_list(reports_col.find({"id": reportid}))
                     if len(result) != 1:
                         abort(404)
-                    return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
+                    return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", reportdict=result[0], admin=check_if_logged())
                 else:
 
                     reports_col.update_one({"id": reportid}, {
@@ -237,7 +220,7 @@ def edit_report(reportid):
                 if len(result) != 1:
                     abort(404)
 
-                return render_template("edit_report.html", categories=categories, reportdict=result[0], admin=check_if_logged(), url=BASE_URL)
+                return render_template("edit_report.html", categories=categories, reportdict=result[0], admin=check_if_logged())
 
 
 @app.route("/report", methods=["GET", "POST"])
@@ -248,7 +231,7 @@ def report():
          or request.form["name"] == ""\
          or request.form["content"] == ""\
          or request.form["email"] == "":
-            return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=BASE_URL)
+            return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", admin=check_if_logged())
         else:
 
             report_date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -299,7 +282,7 @@ def report():
         reportdict = request_args_to_dict({"category": "", "name": "", "content": "", "email": ""})
 
         categories = cursor_to_list(categories_col.find(), "name")
-        return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict, url=BASE_URL)
+        return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -307,7 +290,7 @@ def login():
     if request.method == "POST":
 
         if request.form["login"] == "" or request.form["password"] == "":
-            return render_template("login.html", error="Nie wypełniłeś któregoś pola.", admin=check_if_logged(), url=BASE_URL)
+            return render_template("login.html", error="Nie wypełniłeś któregoś pola.", admin=check_if_logged())
         else:
             username = request.form["login"]
             password = request.form["password"]
@@ -319,7 +302,7 @@ def login():
                 result_list.append(j)
 
             if len(result_list) != 1:
-                return render_template("login.html", error="Nieprawidłowy login lub hasło.", admin=check_if_logged(), url=BASE_URL)
+                return render_template("login.html", error="Nieprawidłowy login lub hasło.", admin=check_if_logged())
 
             session["logged"] = True
 
@@ -329,7 +312,7 @@ def login():
         if check_if_logged():
             return redirect(url_for("index"))
         else:
-            return render_template("login.html", admin=check_if_logged(), url=BASE_URL)
+            return render_template("login.html", admin=check_if_logged())
 
 
 @app.route("/logout")

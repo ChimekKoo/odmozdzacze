@@ -9,7 +9,7 @@
         <table class="w3-table w3-table-all w3-large" style="width:50%; margin-left:auto; margin-right:auto">
             {% for reportdict in ranking_reports %}
                 <tr>
-                    <td><a href="{{ url }}/showreport/{{ reportdict['id'] }}">{{ reportdict['name'] }}</a></td>
+                    <td><a href="{{ url_for('show_report', reportid=reportdict['id']) }}">{{ reportdict['name'] }}</a></td>
                 </tr>
             {% endfor %}
         </table>

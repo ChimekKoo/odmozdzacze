@@ -5,7 +5,7 @@
 {% block content %}
     <header class="w3-container w3-xlarge w3-text-black w3-padding w3-margin-bottom">
         <b>Informacje o zgłoszeniu {{ reportdict['name'] }}&nbsp;</b>
-        <a href="{{ url }}/report?category={{ reportdict['category'] }}&name={{ reportdict['name'] }}" class="w3-button w3-round w3-large w3-white w3-border w3-border-black w3-text-black w3-hover-white w3-hover-border-dark-gray w3-hover-text-dark-gray">Zgłoś to samo!</a>
+        <a href="{{ url_for('report', category=reportdict['category'], name=reportdict['name']) }}" class="w3-button w3-round w3-large w3-white w3-border w3-border-black w3-text-black w3-hover-white w3-hover-border-dark-gray w3-hover-text-dark-gray">Zgłoś to samo!</a>
     </header>
     <table class="w3-table w3-border" style="width:50%">
         <tr>
@@ -48,20 +48,20 @@
     <br>
     <div class="w3-bar" style="width:50%">
         {% if admin == true %}
-            <a href="{{ url }}/deletereport/{{ reportdict['id'] }}" class="w3-bar-item w3-button w3-padding w3-right">
-                <img src="{{ url }}/images/trash_icon" alt="Delete report" width="30px" height="30px">
+            <a href="{{ url_for('delete_report', reportid=reportdict['id']) }}" class="w3-bar-item w3-button w3-padding w3-right">
+                <img src="{{ url_for('static', filename='trash_icon.png') }}" alt="Delete report" width="30px" height="30px">
             </a>
-            <a href="{{ url }}/editreport/{{ reportdict['id'] }}" class="w3-bar-item w3-button w3-padding w3-right">
-                <img src="{{ url }}/images/edit_icon" alt="Edit report" width="30px">
+            <a href="{{ url_for('edit_report', reportid=reportdict['id']) }}" class="w3-bar-item w3-button w3-padding w3-right">
+                <img src="{{ url_for('static', filename='edit_icon.png') }}" alt="Edit report" width="30px">
             </a>
             {% if reportdict["verified"] == true %}
-                <a href="{{ url }}/unverifyreport/{{ reportdict['id'] }}" class="w3-bar-item w3-button w3-padding w3-right">
-                    <img src="{{ url }}/images/unverify_icon" alt="Unverify report" width="30px">
+                <a href="{{ url_for('unverify_report', reportid=reportdict['id']) }}" class="w3-bar-item w3-button w3-padding w3-right">
+                    <img src="{{ url_for('static', filename='unverify_icon.png') }}" alt="Unverify report" width="30px">
                 </a>
             {% endif %}
             {% if reportdict["verified"] == false %}
-                <a href="{{ url }}/verifyreport/{{ reportdict['id'] }}" class="w3-bar-item w3-button w3-padding w3-right">
-                    <img src="{{ url }}/images/verify_icon" alt="Verify report" width="30px">
+                <a href="{{ url_for('verify_report', reportid=reportdict['id']) }}" class="w3-bar-item w3-button w3-padding w3-right">
+                    <img src="{{ url_for('static', filename='verify_icon.png') }}" alt="Verify report" width="30px">
                 </a>
             {% endif %}
         {% endif %}
