@@ -1,5 +1,4 @@
-from flask import Flask, render_template, send_file, request, redirect, url_for, abort, session, jsonify
-from os.path import isfile
+from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from pymongo import MongoClient
 # from smtplib import SMTP
 # from email.mime.multipart import MIMEMultipart
@@ -27,9 +26,19 @@ admins_col = db["admins"]
 
 magic = Magic(mime=True)
 
+blank_reportdict = {
+    "id": "",
+    "datetime": "",
+    "category": "",
+    "name": "",
+    "content": "",
+    "email": "",
+    "verified": ""
+}
+
 
 @app.errorhandler(404)
-def error_404(error):
+def error_404(e):
     if request.url.startswith(API_ENTRYPOINT):
         return jsonify({
             "error": "404 Not Found",
@@ -109,7 +118,10 @@ def browse():
 
     elements = cursor_to_list(reports_col.find(query))
 
-    return render_template("browse.html", elements=elements, categories=cursor_to_list(categories_col.find(), "name"), admin=check_if_logged())
+    return render_template("browse.html",
+                           elements=elements,
+                           categories=cursor_to_list(categories_col.find(), "name"),
+                           admin=check_if_logged())
 
 
 @app.route("/developer")
@@ -185,14 +197,32 @@ def edit_report(reportid):
 
             if request.method == "POST":
 
-                if request.form["category"] == ""\
-                 or request.form["name"] == ""\
-                 or request.form["content"] == ""\
+                if request.form["category"] == "" \
+                 or request.form["name"] == "" \
+                 or request.form["content"] == "" \
                  or request.form["email"] == "":
-                    result = cursor_to_list(reports_col.find({"id": reportid}))
-                    if len(result) != 1:
-                        abort(404)
-                    return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", reportdict=result[0], admin=check_if_logged())
+                    categories = cursor_to_list(categories_col.find({}), "name")
+                    return render_template("report.html",
+                                           reportdict=blank_reportdict,
+                                           error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.",
+                                           categories=categories,
+                                           admin=check_if_logged())
+
+                elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
+                    categories = cursor_to_list(categories_col.find({}), "name")
+                    return render_template("report.html",
+                                           reportdict=blank_reportdict,
+                                           profanity="Nie możemy tego zgłosić, bo twój tekst zawiera bluźnierstwa. Popraw i wyślij jeszcze raz.",
+                                           categories=categories,
+                                           admin=check_if_logged())
+
+                elif request.form["category"] not in cursor_to_list(categories_col.find({}), "name"):
+                    categories = cursor_to_list(categories_col.find({}), "name")
+                    return render_template("report.html",
+                                           reportdict=blank_reportdict,
+                                           error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.",
+                                           categories=categories,
+                                           admin=check_if_logged())
                 else:
 
                     reports_col.update_one({"id": reportid}, {
@@ -203,8 +233,6 @@ def edit_report(reportid):
                             "email": request.form["email"]
                         }
                     })
-
-                    categories = cursor_to_list(categories_col.find(), "name")
 
                     result = cursor_to_list(reports_col.find({"id": reportid}))
                     if len(result) != 1:
@@ -220,7 +248,10 @@ def edit_report(reportid):
                 if len(result) != 1:
                     abort(404)
 
-                return render_template("edit_report.html", categories=categories, reportdict=result[0], admin=check_if_logged())
+                return render_template("edit_report.html",
+                                       categories=categories,
+                                       reportdict=result[0],
+                                       admin=check_if_logged())
 
 
 @app.route("/report", methods=["GET", "POST"])
@@ -231,7 +262,29 @@ def report():
          or request.form["name"] == ""\
          or request.form["content"] == ""\
          or request.form["email"] == "":
-            return render_template("report.html", error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.", admin=check_if_logged())
+            categories = cursor_to_list(categories_col.find({}), "name")
+            return render_template("report.html",
+                                   reportdict=blank_reportdict,
+                                   error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.",
+                                   categories=categories,
+                                   admin=check_if_logged())
+
+        elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
+            categories = cursor_to_list(categories_col.find({}), "name")
+            return render_template("report.html",
+                                   reportdict=blank_reportdict,
+                                   profanity="Nie możemy tego zgłosić, bo twój tekst zawiera bluźnierstwa. Popraw i wyślij jeszcze raz.",
+                                   categories=categories,
+                                   admin=check_if_logged())
+
+        elif request.form["category"] not in cursor_to_list(categories_col.find({}), "name"):
+            categories = cursor_to_list(categories_col.find({}), "name")
+            return render_template("report.html",
+                                   reportdict=blank_reportdict,
+                                   error="Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.",
+                                   categories=categories,
+                                   admin=check_if_logged())
+
         else:
 
             report_date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
