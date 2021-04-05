@@ -14,6 +14,7 @@
 
     {% if profanity is defined %}
     <div class="w3-panel w3-leftbar w3-pale-yellow w3-padding-16">
+        <img src="{{ url_for('static', filename='profanity_icon.png') }}" width="40px" height="40px" style="margin-right: 15px">
         <b>{{ profanity }}</b>
     </div>
     <br>
@@ -41,15 +42,15 @@
 
         <br>
 
-        <input class="w3-input w3-light-gray w3-border" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict["name"] }}" required><br>
+        <input class="w3-input w3-light-gray w3-border" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" required><br>
         <textarea id="content-textarea" class="w3-input w3-light-gray w3-border" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" required></textarea><br>
 
-        <input class="w3-input w3-light-gray w3-border" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict["email"] }}" required><br>
+        <input class="w3-input w3-light-gray w3-border" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
         <span class="w3-text">(nie dostaniesz spamu, nie dostaniesz reklam. Naprawdę)</span>
 
         <br><br>
 
-        <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" value="Zgłoś!"><br>
+        <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" style="width: 100px" value="Zgłoś!"><br>
 
     </form>
 
