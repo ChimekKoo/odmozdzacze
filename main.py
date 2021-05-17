@@ -62,7 +62,7 @@ def about():
 def ranking():
     result = cursor_to_list(reports_col.find())
 
-    return render_template("ranking.html", ranking_reports=result)
+    return render_template("ranking.html", ranking_reports=result, admin=check_if_logged())
 
 
 @app.route("/browse")
