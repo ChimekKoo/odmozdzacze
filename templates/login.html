@@ -6,21 +6,25 @@
 
     <br>
 
-    {% if error is defined %}
-    <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
-        <b>{{ error }}</b>
-    </div>
-    <br>
+    {% if field_error is defined %}
+        {% if field_error == True %}
+        <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+            <b>Nie wypełniłeś któregoś pola.</b>
+        </div>
+        <br>
+        {% endif %}
     {% endif %}
 
-    {% if status is defined %}
-    <div class="w3-panel w3-leftbar w3-pale-green w3-padding-16">
-        <b>{{ status }}</b>
-    </div>
-    <br>
+    {% if data_error is defined %}
+        {% if data_error == True %}
+        <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+            <b>Nieprawidłowy login lub hasło.</b>
+        </div>
+        <br>
+        {% endif %}
     {% endif %}
 
-    <form action="{{ url_for('login') }}" method="post">
+    <form action="{{ url_for('login', redirect=redirect_to) }}" method="post">
         <input class="w3-input w3-light-gray w3-border" type="text" name="login" placeholder="Login" style="width:40%" required><br>
         <input class="w3-input w3-light-gray w3-border" type="password" name="password" placeholder="Hasło" style="width:40%" required><br>
         <br>

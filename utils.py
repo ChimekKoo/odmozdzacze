@@ -1,7 +1,9 @@
-from random import randint
+from random import randint, choice, random
 from main import request, session
 from json import loads as json_load
-
+import email_validator
+from constants import ALPHANUMERIC, API_TOKEN_SIZE
+import bcrypt
 
 def generate_id(ids):
     while True:
@@ -9,6 +11,11 @@ def generate_id(ids):
         if random_number not in ids:
             return str(random_number)
 
+def generate_api_token(tokens):
+    while True:
+        random_token = "".join(choice(ALPHANUMERIC) for _ in range(API_TOKEN_SIZE))
+        if random_token not in tokens:
+            return random_token
 
 def check_if_logged():
     try:
@@ -21,6 +28,13 @@ def check_if_logged():
         else:
             logged = True
     return logged
+
+
+def hash_psw(psw):
+    return bcrypt.hashpw(psw.encode(), bcrypt.gensalt()).decode("utf8")
+
+def check_hashed_psw(psw, hashed):
+    return bcrypt.checkpw(psw.encode(), hashed.encode())
 
 
 def cursor_to_list(cursor, cursor_filter=""):
@@ -71,3 +85,10 @@ def check_profanity(text):
             return True
     else:
         return False
+
+def valid_email(email):
+    try:
+        email_validator.validate_email(email)
+    except email_validator.EmailNotValidError:
+        return False
+    return True

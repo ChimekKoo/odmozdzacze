@@ -1,5 +1,8 @@
 .idea/
 venv/
+.vscode/
 __pycache__/
-cred.json
+cred.*
+!cred.py
 .DS_Store
+.env

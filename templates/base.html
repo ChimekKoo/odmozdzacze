@@ -44,7 +44,7 @@
         <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Deweloper</a>
         <a href="{{ url_for('contact') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Kontakt</a>
         {% if admin == false %}
-            <a href="{{ url_for('login') }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
+            <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
                 <img src="{{ url_for('static', filename='user_icon.png') }}" alt="Logowanie" width="24px" height="24px">
             </a>
         {% else %}

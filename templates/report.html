@@ -5,26 +5,32 @@
 {% block content %}
 <div class="w3-container">
 
-    {% if error is defined %}
-    <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
-        <b>{{ error }}</b>
-    </div>
-    <br>
+    {% if field_error is defined %}
+        {% if field_error == True %}
+        <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+            <b>Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.</b>
+        </div>
+        <br>
+        {% endif %}
     {% endif %}
 
-    {% if profanity is defined %}
-    <div class="w3-panel w3-leftbar w3-pale-yellow w3-padding-16">
-        <img src="{{ url_for('static', filename='profanity_icon.png') }}" width="40px" height="40px" style="margin-right: 15px">
-        <b>{{ profanity }}</b>
-    </div>
-    <br>
+    {% if email_error is defined %}
+        {% if email_error == True %}
+        <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+            <b>Niepoprawny adres e-mail.</b>
+        </div>
+        <br>
+        {% endif %}
     {% endif %}
 
-    {% if status is defined %}
-    <div class="w3-panel w3-leftbar w3-pale-green w3-padding-16">
-        <b>{{ status }}</b>
-    </div>
-    <br>
+    {% if profanity_found is defined %}
+        {% if profanity_found == True  %}
+        <div class="w3-panel w3-leftbar w3-pale-yellow w3-padding-16">
+            <img src="{{ url_for('static', filename='profanity_icon.png') }}" width="40px" height="40px" style="margin-right: 15px">
+            <b>Nie możemy tego zgłosić, bo Twój tekst zawiera wulgarne słowa. Popraw go i wyślij jeszcze raz.</b>
+        </div>
+        <br>
+        {% endif %}
     {% endif %}
 
     <form action="{{ url_for('report') }}" method="post">
@@ -46,7 +52,7 @@
         <textarea id="content-textarea" class="w3-input w3-light-gray w3-border" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" required></textarea><br>
 
         <input class="w3-input w3-light-gray w3-border" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
-        <span class="w3-text">(nie dostaniesz spamu, nie dostaniesz reklam. Naprawdę)</span>
+        <span class="w3-text">(Nie dostaniesz spamu i reklam. Kiedy możliwość założenia konta będzie gotowa, powiadomimy Cię.)</span>
 
         <br><br>
 
