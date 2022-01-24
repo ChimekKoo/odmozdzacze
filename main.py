@@ -401,7 +401,6 @@ def login():
         if check_if_logged():
             return redirect(redirect_to_decoded)
         else:
-            print("redirect_to:", redirect_to)
             return render_template("login.html", admin=check_if_logged(), redirect_to=redirect_to)
 
 
