@@ -45,21 +45,21 @@
         <a href="{{ url_for('contact') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Kontakt</a>
         {% if admin == false %}
             <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='user_icon.png') }}" alt="Logowanie" width="24px" height="24px">
+                <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" width="24px" height="24px">
             </a>
         {% else %}
             <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='logout_icon.png') }}" alt="Wyloguj" width="24px" height="24px">
+                <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" width="24px" height="24px">
             </a>
         {% endif %}
         <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
-            <img src="{{ url_for('static', filename='discord_logo.png') }}" alt="Discord" width="24px" height="24px">
+            <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" width="24px" height="24px">
         </a>
-        <a href="http://github.com/odmozdzacze" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
-            <img src="{{ url_for('static', filename='github_logo.png') }}" alt="GitHub" width="24px" height="24px">
+        <a href="http://github.com/odmozdzacze/odmozdzacze" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
+            <img src="{{ url_for('static', filename='github_logo.png') }}" title="GitHub" alt="GitHub" width="24px" height="24px">
         </a>
         <a href="http://odmozdzacze.tawk.help" target="_blank" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-            <img src="{{ url_for('static', filename='help_icon.png') }}" alt="Help center" width="24px" height="24px">
+            <img src="{{ url_for('static', filename='help_icon.png') }}" title="Help center" alt="Help center" width="24px" height="24px">
         </a>
     </div>
 
@@ -73,7 +73,7 @@
 
     <footer class="w3-container w3-padding-32 w3-monospace" style="background-color: #dddddd">
         <div class="w3-center">
-            Copyright &copy; 2021 <a href="https://github.com/chimekkoo" target="_blank">ChimekKoo</a> and <a href="#">Ynin</a>
+            <span>Copyright &copy; 2021 ChimekKoo and Ynin</span>
         </div>
     </footer>
 

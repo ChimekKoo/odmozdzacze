@@ -53,7 +53,8 @@ def about():
 @app.route("/ranking")
 def ranking():
     redirect_to = url64.encode(request.url)
-    result = cursor_to_list(reports_col.find())
+    # result = cursor_to_list(reports_col.find())
+    result = []
 
     return render_template("ranking.html", ranking_reports=result, admin=check_if_logged(), redirect_to=redirect_to)
 
