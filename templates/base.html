@@ -41,14 +41,14 @@
         <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Zgłoś</a>
         <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Ranking</a>
         <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
-        <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Deweloper</a>
+        <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">API</a>
         <a href="{{ url_for('contact') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Kontakt</a>
         {% if admin == false %}
             <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
                 <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" width="24px" height="24px">
             </a>
         {% else %}
-            <a href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
+            <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
                 <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" width="24px" height="24px">
             </a>
         {% endif %}
@@ -73,7 +73,7 @@
 
     <footer class="w3-container w3-padding-32 w3-monospace" style="background-color: #dddddd">
         <div class="w3-center">
-            <span>Copyright &copy; 2021 ChimekKoo and Ynin</span>
+            <span>Made by &copy; 2021-2022 ChimekKoo and Ynin</span>
         </div>
     </footer>
 

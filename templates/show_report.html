@@ -38,12 +38,16 @@
             <td>Opis:</td>
             <td>{{ reportdict['content'] }}</td>
         </tr>
-        {% if admin == true %}
         <tr>
             <td>Autor:</td>
-            <td><a href="mailto:{{ reportdict['email'] }}" title="Napisz maila">{{ reportdict['email'] }}</a></td>
+            <td>
+                {% if admin == true %}
+                <a href="mailto:{{ reportdict['email'] }}" title="Napisz maila">{{ reportdict['email'] }}</a>
+                {% else %}
+                <span><i>Autor ukryty</i></span>
+                {% endif %}
+            </td>
         </tr>
-        {% endif %}
     </table>
     <br>
     <div class="w3-bar" style="width:50%">
