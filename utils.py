@@ -92,3 +92,6 @@ def valid_email(email):
     except email_validator.EmailNotValidError:
         return False
     return True
+
+def all_lowercase(s):
+    return "".join([x.lower() for x in s])

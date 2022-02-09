@@ -35,7 +35,7 @@
 
     <form action="{{ url_for('report') }}" method="post">
 
-        <select name="category" class="w3-select w3-light-gray w3-border" required>
+        <select name="category" class="w3-select w3-light-gray w3-border w3-round" required>
             <option value="" disabled selected>Kategoria</option>
             {% for category in categories %}
                 {% if category == reportdict['category'] %}
@@ -48,10 +48,10 @@
 
         <br>
 
-        <input class="w3-input w3-light-gray w3-border" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" required><br>
-        <textarea id="content-textarea" class="w3-input w3-light-gray w3-border" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" required></textarea><br>
+        <input class="w3-input w3-light-gray w3-border w3-round" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" required><br>
+        <textarea id="content-textarea" class="w3-input w3-light-gray w3-border w3-round" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" required></textarea><br>
 
-        <input class="w3-input w3-light-gray w3-border" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
+        <input class="w3-input w3-light-gray w3-border w3-round" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
         <span class="w3-text">(Nie dostaniesz spamu i reklam. Kiedy możliwość założenia konta będzie gotowa, powiadomimy Cię.)</span>
 
         <br><br>

@@ -13,8 +13,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
+    <style>
+        img.navbar-img {
+            width: 10px;
+        }
+    </style>
+
 </head>
-<body style="margin: 0px; position: relative;">
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 
     <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position:fixed">
         <span>
@@ -35,33 +41,32 @@
         <header class="w3-container w3-xlarge w3-padding" style="letter-spacing:5px; text-transform: uppercase;">odmóżdżacze</header>
     </div>
 
-    <div class="w3-bar w3-border" style="font-size:16px; background-color: #3f91d8">
-        <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%"><i class="fa fa-home"></i> Home</a>
-        <a href="{{ url_for('about') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">O stronie</a>
-        <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Zgłoś</a>
-        <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Ranking</a>
-        <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
-        <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">API</a>
-        <a href="{{ url_for('contact') }}" class="w3-bar-item w3-button w3-padding w3-text-white" style="width:10%">Kontakt</a>
+    <nav class="w3-bar" style="font-size: 16px; background-color: #3f91d8">
+        <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%"><i class="fa fa-home"></i>&nbsp;Home</a>
+        <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Zgłoś</a>
+        <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Ranking</a>
+        <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
+        <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">API</a>
+        <a href="{{ url_for('contact') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Kontakt</a>
         {% if admin == false %}
-            <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" width="24px" height="24px">
+            <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+                <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" class="navbar-img">
             </a>
         {% else %}
-            <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" width="24px" height="24px">
+            <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+                <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" class="navbar-img">
             </a>
         {% endif %}
-        <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
-            <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" width="24px" height="24px">
+        <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right">
+            <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" class="navbar-img">
         </a>
-        <a href="http://github.com/odmozdzacze/odmozdzacze" target="_blank" class="w3-bar-item w3-button w3-padding w3-right">
-            <img src="{{ url_for('static', filename='github_logo.png') }}" title="GitHub" alt="GitHub" width="24px" height="24px">
+        <a href="http://github.com/odmozdzacze/odmozdzacze" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right">
+            <img src="{{ url_for('static', filename='github_logo.png') }}" title="GitHub" alt="GitHub" class="navbar-img">
         </a>
-        <a href="http://odmozdzacze.tawk.help" target="_blank" class="w3-bar-item w3-button w3-padding w3-right w3-text-white">
-            <img src="{{ url_for('static', filename='help_icon.png') }}" title="Help center" alt="Help center" width="24px" height="24px">
+        <a href="http://odmozdzacze.tawk.help" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+            <img src="{{ url_for('static', filename='help_icon.png') }}" title="Help center" alt="Help center" class="navbar-img">
         </a>
-    </div>
+    </nav>
 
     <!-- Background pattern from Toptal Subtle Patterns -->
 
@@ -71,10 +76,8 @@
         </div>
     </div>
 
-    <footer class="w3-container w3-padding-32 w3-monospace" style="background-color: #dddddd">
-        <div class="w3-center">
-            <span>Made by &copy; 2021-2022 ChimekKoo and Ynin</span>
-        </div>
+    <footer class="w3-container w3-padding-32 w3-monospace" style="background-color:#dddddd; text-align:center; margin-top: auto;">
+        <span>&copy; 2021-2022 ChimekKoo and Ynin</span>
     </footer>
 
     <script type="text/javascript">
@@ -86,15 +89,15 @@
 
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
-      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-      (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/5f8b0f9cf91e4b431ec54b7f/default';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
-      })();
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/5f8b0f9cf91e4b431ec54b7f/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+        })();
     </script>
     <!--End of Tawk.to Script-->
 

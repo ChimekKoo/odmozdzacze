@@ -1,3 +1,5 @@
+from asyncio import QueueEmpty
+from tkinter.tix import Tree
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
 import werkzeug
@@ -17,7 +19,8 @@ app.secret_key = cred["secret_key"]
 
 blank_reportdict = {
     "id": "",
-    "datetime": "",
+    "edittime": "",
+    "inserttime": "",
     "category": "",
     "name": "",
     "content": "",
@@ -35,20 +38,13 @@ def error_404(e):
             "description": "Resource not found - check url."
         }), 404
     else:
-        return render_template("error.html", error_num="404", error_name="Nie znaleziono", admin=check_if_logged(), redirect_to=redirect_to)
+        return render_template("error.html", error_code="404", error_name="Nie znaleziono", admin=check_if_logged(), redirect_to=redirect_to)
 
 
 @app.route("/")
 def index():
     redirect_to = url64.encode(request.url)
     return render_template("index.html", admin=check_if_logged(), redirect_to=redirect_to)
-
-
-@app.route("/about")
-def about():
-    redirect_to = url64.encode(request.url)
-    return render_template("about.html", admin=check_if_logged(), redirect_to=redirect_to)
-
 
 @app.route("/ranking")
 def ranking():
@@ -63,59 +59,50 @@ def ranking():
 def browse():
     redirect_to = url64.encode(request.url)
 
-    # request_args = request_args_to_dict({"q": "", "category": "", "per-page": "10", "verified": "on"})
-    #
-    # if request_args["verified"] == "verified":
-    #     request_args["verified"] = True
-    # elif request_args["verified"] == "unverified":
-    #     request_args["verified"] = False
-    # else:
-    #     request_args["verified"] = ""
-    #
-    # request_args["q"] = request_args["q"].lower()
-    #
-    # elements = cursor_to_list(reports_col.find({
-    #     "name": request_args["q"],
-    #     "category": request_args["category"],
-    #     "verified": request_args["verified"]
-    # }))
-    #
-    # per_page = str(request_args["per-page"])
-    #
-    # try:
-    #     per_page = int(per_page)
-    # except ValueError:
-    #     per_page = len(elements)
-    #
-    # if len(elements) > per_page:
-    #     elements = elements[:per_page]
+    categories = cursor_to_list(categories_col.find(), "name")
 
     query = {}
-    for arg in ["q", "category", "verified", "per-page"]:
-        try:
-            request.args[arg]
-        except KeyError:
-            pass
-        else:
-            if request.args[arg] != "":
+    fields = {"name": "", "category": "", "verified": ""}
 
-                if arg == "per-page":
-                    per_page = request.args[arg]
-                elif arg == "verified":
-                    if request.args[arg] == "verified":
-                        query[arg] = True
-                    elif request.args[arg] == "unverified":
-                        query[arg] = False
-                    else:
-                        continue
-                else:
-                    query[arg] = request.args[arg]
+    try:
+        request.args["q"]
+    except KeyError:
+        pass
+    else:
+        query["name"] = {"$regex": request.args["q"].lower()}
+        fields["name"] = request.args["q"].lower()
 
+    try:
+        request.args["category"]
+    except KeyError:
+        pass
+    else:
+        if request.args["category"] in categories:
+            query["category"] = request.args["category"]
+            fields["category"] = request.args["category"]
+    
+    try:
+        request.args["verified"]
+    except KeyError:
+        pass
+    else:
+        if request.args["verified"] == "verified":
+            query["verified"] = True
+            fields["verified"] = True
+        elif request.args["verified"] == "unverified":
+            query["verified"] = False
+            fields["verified"] = False
+
+    if query == {}:
+        query = {"verified": True}
+        fields["verified"] = True
+    
     elements = cursor_to_list(reports_col.find(query))
 
     return render_template("browse.html",
                            elements=elements,
-                           categories=cursor_to_list(categories_col.find(), "name"),
+                           fields=fields,
+                           categories=categories,
                            admin=check_if_logged(),
                            redirect_to=redirect_to)
 
@@ -248,12 +235,15 @@ def edit_report(reportid):
 
                 else:
 
+                    edit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
                     reports_col.update_one({"id": reportid}, {
                         "$set": {
                             "category": request.form["category"],
-                            "name": request.form["name"],
+                            "name": all_lowercase(request.form["name"]),
                             "content": request.form["content"],
-                            "email": request.form["email"]
+                            "email": request.form["email"],
+                            "edittime": edit_time
                         }
                     })
 
@@ -331,16 +321,17 @@ def report():
 
         else:
 
-            report_date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            insert_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             ids = cursor_to_list(reports_col.find(), "id")
             report_id = generate_id(ids)
 
             reports_col.insert_one({
                 "id": report_id,
-                "datetime": report_date_time,
+                "inserttime": insert_time,
+                "edittime": insert_time,
                 "category": request.form["category"],
-                "name": request.form["name"],
+                "name": all_lowercase(request.form["name"]),
                 "content": request.form["content"],
                 "email": request.form["email"],
                 "verified": False
