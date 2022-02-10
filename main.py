@@ -1,5 +1,4 @@
-from asyncio import QueueEmpty
-from tkinter.tix import Tree
+from crypt import methods
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
 import werkzeug
@@ -49,8 +48,17 @@ def index():
 @app.route("/ranking")
 def ranking():
     redirect_to = url64.encode(request.url)
-    # result = cursor_to_list(reports_col.find())
-    result = []
+    
+    reports = reports_col.find({"verified": True})
+
+    tmp = {}
+    for reportdict in reports:
+        try:
+            tmp[reportdict["name"]] += 1
+        except KeyError:
+            tmp[reportdict["name"]] = 1
+    
+    result = sorted(tmp.items(), key=lambda x: x[1], reverse=True)
 
     return render_template("ranking.html", ranking_reports=result, admin=check_if_logged(), redirect_to=redirect_to)
 
@@ -59,18 +67,18 @@ def ranking():
 def browse():
     redirect_to = url64.encode(request.url)
 
-    categories = cursor_to_list(categories_col.find(), "name")
+    categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
     query = {}
     fields = {"name": "", "category": "", "verified": ""}
 
     try:
-        request.args["q"]
+        request.args["name"]
     except KeyError:
         pass
     else:
-        query["name"] = {"$regex": request.args["q"].lower()}
-        fields["name"] = request.args["q"].lower()
+        query["name"] = {"$regex": request.args["name"].lower()}
+        fields["name"] = request.args["name"].lower()
 
     try:
         request.args["category"]
@@ -193,12 +201,13 @@ def edit_report(reportid):
                     category = request.form["category"]
                 except werkzeug.exceptions.BadRequestKeyError:
                     category = ""
+                
+                categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
                 if request.form["category"] == "" \
                  or request.form["name"] == "" \
                  or request.form["content"] == "" \
                  or request.form["email"] == "":
-                    categories = cursor_to_list(categories_col.find({}), "name")
                     return render_template("report.html",
                                            reportdict=blank_reportdict,
                                            field_error=True,
@@ -207,7 +216,6 @@ def edit_report(reportid):
                                            redirect_to=redirect_to)
 
                 elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
-                    categories = cursor_to_list(categories_col.find({}), "name")
                     return render_template("report.html",
                                            reportdict=blank_reportdict,
                                            profanity_found=True,
@@ -215,8 +223,7 @@ def edit_report(reportid):
                                            admin=check_if_logged(),
                                            redirect_to=redirect_to)
 
-                elif category not in cursor_to_list(categories_col.find({}), "name"):
-                    categories = cursor_to_list(categories_col.find({}), "name")
+                elif category not in categories:
                     return render_template("report.html",
                                            reportdict=blank_reportdict,
                                            field_error=True,
@@ -255,7 +262,7 @@ def edit_report(reportid):
 
             else:
 
-                categories = cursor_to_list(categories_col.find(), "name")
+                categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
                 result = cursor_to_list(reports_col.find({"id": reportid}))
                 if len(result) != 1:
@@ -280,11 +287,12 @@ def report():
         except werkzeug.exceptions.BadRequestKeyError:
             category = ""
 
+        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+
         if category == ""\
          or request.form["name"] == ""\
          or request.form["content"] == ""\
          or request.form["email"] == "":
-            categories = cursor_to_list(categories_col.find({}), "name")
             return render_template("report.html",
                                    reportdict=blank_reportdict,
                                    categories=categories,
@@ -293,7 +301,6 @@ def report():
                                    redirect_to=redirect_to)
 
         elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
-            categories = cursor_to_list(categories_col.find({}), "name")
             return render_template("report.html",
                                    reportdict=blank_reportdict,
                                    profanity_found=True,
@@ -302,7 +309,6 @@ def report():
                                    redirect_to=redirect_to)
 
         elif category not in cursor_to_list(categories_col.find({}), "name"):
-            categories = cursor_to_list(categories_col.find({}), "name")
             return render_template("report.html",
                                    reportdict=blank_reportdict,
                                    field_error=True,
@@ -337,7 +343,7 @@ def report():
                 "verified": False
             })
 
-            categories = cursor_to_list(categories_col.find(), "name")
+            categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
             return redirect(url_for("show_report", reportid=report_id))
 
@@ -345,7 +351,7 @@ def report():
 
         reportdict = request_args_to_dict({"category": "", "name": "", "content": "", "email": ""})
 
-        categories = cursor_to_list(categories_col.find(), "name")
+        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
         return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict, redirect_to=redirect_to)
 
 
@@ -416,6 +422,59 @@ def logout():
         return redirect(redirect_to_decoded)
     else:
         return redirect(url_for("login", redirect_to=redirect_to))
+
+
+@app.route("/suggestcategory", methods=["GET", "POST"])
+def suggest_category():
+
+    redirect_to = url64.encode(request.url)
+
+    try:
+        request.args["embed"]
+    except KeyError:
+        embed = False
+    else:
+        if request.args["embed"] == "true":
+            embed = True
+        else:
+            embed = False
+
+    if embed == True:
+        if request.method == "POST":
+            try:
+                request.form["name"]
+            except KeyError:
+                return render_template("suggest_category_embed.html", field_error=True, admin=check_if_logged())
+            else:
+                category_name = request.form["name"].lower()
+            
+            if check_profanity(category_name):
+                return render_template("suggest_category_embed.html", profanity_error=True, admin=check_if_logged())
+            elif category_name in cursor_to_list(categories_col.find(), "name"):
+                return render_template("suggest_category_embed.html", already_reported_error=True, admin=check_if_logged())
+            elif category_name == "":
+                return render_template("suggest_category_embed.html", field_error=True, admin=check_if_logged())
+            
+            categories_col.insert_one({
+                "name": category_name,
+                "accepted": check_if_logged()
+            })
+
+            return_str = "close"
+            if check_if_logged():
+                return_str += " "
+                return_str += category_name
+            return return_str
+
+        elif request.method == "GET":
+            
+            if embed:
+                return render_template("suggest_category_embed.html", admin=check_if_logged())
+            else:
+                redirect_to = url64.encode(request.url)
+                return render_template("suggest_category.html", admin=check_if_logged(), redirect_to=redirect_to)
+    else:
+        return render_template("suggest_category.html", admin=check_if_logged(), redirect_to=redirect_to)
 
 
 if __name__ == "__main__":

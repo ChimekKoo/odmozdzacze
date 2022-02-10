@@ -6,7 +6,7 @@
     <form action="/browse" method="get" id="search-form">
 
         <div class="w3-bar">
-            <input class="w3-bar-item w3-input w3-border w3-border-dark-grey w3-padding w3-round w3-light-grey w3-margin-right" type="text" value="{{ fields["name"] }}" placeholder="Szukaj odmóżdżaczy..." name="q" style="width:60%">
+            <input class="w3-bar-item w3-input w3-border w3-border-dark-grey w3-padding w3-round w3-light-grey w3-margin-right" type="text" value="{{ fields["name"] }}" placeholder="Szukaj odmóżdżaczy..." name="name" style="width:60%">
             <button class="w3-bar-item w3-button w3-round w3-border w3-border-dark-grey w3-text-black w3-light-grey" onclick="submit_form()"><i class="fa fa-search"></i><span class="w3-padding">Szukaj</span></button>
         </div>
 
@@ -21,13 +21,13 @@
             </select>
 
             <div class="w3-bar-item w3-container">
-                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
-                <label class="w3-margin-right">Wszystkie</label>
+                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
+                <label class="w3-margin-right">Zweryfikowane</label>
             </div>
 
             <div class="w3-bar-item w3-container">
-                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
-                <label class="w3-margin-right">Zweryfikowane</label>
+                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
+                <label class="w3-margin-right">Wszystkie</label>
             </div>
 
             <div class="w3-bar-item w3-container">

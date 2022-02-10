@@ -69,6 +69,7 @@ def request_form_to_dict(available_request_form):
         if request_arg in request.args.keys():
             request_args[request_arg] = request.form[request_arg]
         else:
+
             request_args[request_arg] = available_request_form[request_arg]
 
     return request_args

@@ -3,6 +3,18 @@
 {% block title %}Informacje o zgłoszeniu {{ reportdict['name'] }} - {% endblock %}
 
 {% block content %}
+
+    <div id="modal" class="modal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content" style="margin: 15% auto; padding: 30px; border: 1px solid #888888; width: 30%">
+            <div style="width: 80%; position: relative; left: 10%; text-align: center">
+                <p style="font-size: 20px">Jesteś pewien, że chcesz usunąć zgłoszenie?</p>
+                <button class="w3-button w3-round w3-border w3-border-dark-gray w3-hover-light-gray" style="width: 80%; margin: 5px" onclick="closeModal()">Anuluj</button>
+                <br>
+                <a class="w3-button w3-round w3-red w3-text-white w3-hover-pale-red w3-border w3-border-dark-gray" style="width:80%; margin: 5px" href="{{ url_for('delete_report', reportid=reportdict['id']) }}">Usuń</a>
+            </div>
+        </div>
+    </div>
+
     <header class="w3-container w3-xlarge w3-text-black w3-padding w3-margin-bottom">
         <b>Informacje o zgłoszeniu {{ reportdict['name'] }}&nbsp;</b>
         <a href="{{ url_for('report', category=reportdict['category'], name=reportdict['name']) }}" class="w3-button w3-round w3-large w3-white w3-border w3-border-black w3-text-black w3-hover-white w3-hover-border-dark-gray w3-hover-text-dark-gray">Zgłoś to samo!</a>
@@ -56,9 +68,9 @@
     <br>
     <div class="w3-bar" style="width:50%">
         {% if admin == true %}
-            <a href="{{ url_for('delete_report', reportid=reportdict['id']) }}" title="Usuń zgłoszenie" class="w3-bar-item w3-button w3-padding w3-right">
+            <button onclick="openModal()" title="Usuń zgłoszenie" class="w3-bar-item w3-button w3-padding w3-right">
                 <img src="{{ url_for('static', filename='trash_icon.png') }}" alt="Delete report" width="30px" height="30px">
-            </a>
+            </button>
             <a href="{{ url_for('edit_report', reportid=reportdict['id']) }}" title="Edytuj zgłoszenie" class="w3-bar-item w3-button w3-padding w3-right">
                 <img src="{{ url_for('static', filename='edit_icon.png') }}" alt="Edit report" width="30px">
             </a>
@@ -74,4 +86,21 @@
             {% endif %}
         {% endif %}
     </div>
+
+    {% if admin == true %}
+    <script>
+        var modal = document.getElementById("modal");
+        function openModal() {
+            modal.style.display = "block";
+        }
+        function closeModal() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+    {% endif %}
 {% endblock %}

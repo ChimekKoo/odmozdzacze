@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% if admin == true %}Dodaj{% else %}Zaproponuj{% endif %} nową kategorię - Odmóżdżacze</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+</head>
+<body>
+    <form action="{{ url_for('suggest_category', embed='true') }}" method="POST">
+        <input type="text" name="name" class="w3-input w3-round w3-border w3-border-dark-gray" placeholder="Nazwa kategorii" required>
+        <br>
+        <input type="submit" class="w3-button w3-round w3-border w3-border-dark-gray" value="{% if admin == true %}Dodaj{% else %}Zaproponuj{% endif %}">
+        <br>
+        {% if field_error is defined and field_error == true %}
+            <span class="w3-text-red">Nazwa kategorii jest wymagana</span>
+        {% endif %}
+        {% if already_reported_error is defined and already_reported_error == true %}
+            <span class="w3-text-red">Taka kategoria już istnieje lub ktoś ją zaproponował.</span>
+        {% endif %}
+        {% if profanity_error is defined and profanity_error == true %}
+            <span class="w3-text-red">Nazwa zawiera wulgaryzmy. Nie możesz jej zgłosić.</span>
+        {% endif %}
+    </form>
+</body>
+</html>

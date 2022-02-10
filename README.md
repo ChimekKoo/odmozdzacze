@@ -2,7 +2,42 @@
 ![Discord](https://img.shields.io/discord/788341540438933554?color=%237289DA&label=discord&logo=discord&logoColor=%23ffffff)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/odmozdzacze/odmozdzacze)
 ![GitHub](https://img.shields.io/github/license/odmozdzacze/odmozdzacze)
-![Website](https://img.shields.io/website?label=test%20website&url=http%3A%2F%2Fodmozdzacze.chimekkoo.repl.it)
 ![GitHub language count](https://img.shields.io/github/languages/count/odmozdzacze/odmozdzacze)
-![Language](https://img.shields.io/badge/language-python-informational)
-![Framework](https://img.shields.io/badge/framework-flask-informational)
+![Framework](https://img.shields.io/badge/built_with-flask-informational)
+
+## Table of contents
+  - [General info](#general-info)
+  - [Technologies](#technologies)
+  - [Setup](#setup)
+  - [Status](#status)
+  - [Contact](#contact)
+
+## General info
+Odmozdzacze is a polish service dedicated for reporting brain-wasting apps, games and cartoons.
+More info on the main page (templates/index.html in the code).
+
+## Technologies
+- Python 3.8
+- Flask 1.1.2
+- MongoDB and PyMongo 3.11
+- more in requirements.txt
+  
+## Setup
+**On Ubuntu linux:**  
+Set environment variables ODMOZDZACZE_MONGODB_URL to mongodb connection url and ODMOZDZACZE_SECRETKEY to session secret key (it can be just a random string)
+```
+git pull git@github.com:odmozdzacze/odmozdzacze
+cd odmozdzacze
+python3 -m venv venv
+source venv/bin/activate
+pip3 installl -r requirements.txt
+python3 main.py
+```
+**On Docker:**  
+Not available yet.
+
+## Status
+Not stable
+
+## Contact
+Feel free to contact us [here](https://docs.google.com/forms/d/e/1FAIpQLSclAWhzF7YhCIZqWfmHAMA1Y-f6VHzqV2qb75RPhDT4m2ubVQ/viewform?usp=sf_link).
