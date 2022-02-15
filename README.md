@@ -13,14 +13,14 @@
   - [Contact](#contact)
 
 ## General info
-Odmozdzacze is a polish service dedicated for reporting brain-wasting apps, games and cartoons.
-More info on the main page (templates/index.html in the code).
+Odmozdzacze is a polish service dedicated for reporting brain-wasting apps, games, cartoons, etc.
+More info on the main page `templates/index.html` in the code (in polish).
 
 ## Technologies
 - Python 3.8
 - Flask 1.1.2
 - MongoDB and PyMongo 3.11
-- more in requirements.txt
+the rest of depensencies in `requirements.txt`
   
 ## Setup
 **On Ubuntu linux:**  
