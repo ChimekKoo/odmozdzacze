@@ -13,13 +13,13 @@
 
 ## General info
 Odmozdzacze is a polish service dedicated for reporting brain-wasting apps, games, cartoons, etc.
-More info on the main page `templates/index.html` in the code (in polish).
+More info on the main page `templates/index.html` (unfortunetely in polish).
 
 ## Technologies
 - Python 3.8
 - Flask 1.1.2
 - MongoDB and PyMongo 3.11  
-the rest of depensencies in `requirements.txt`
+- the rest of the dependencies in `requirements.txt`.
   
 ## Setup
 **On Ubuntu linux:**  
