@@ -1,8 +1,7 @@
 # Odmozdzacze
 ![Discord](https://img.shields.io/discord/788341540438933554?color=%237289DA&label=discord&logo=discord&logoColor=%23ffffff)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/odmozdzacze/odmozdzacze)
-![GitHub](https://img.shields.io/github/license/odmozdzacze/odmozdzacze)
-![GitHub language count](https://img.shields.io/github/languages/count/odmozdzacze/odmozdzacze)
+![Lines of code](https://img.shields.io/tokei/lines/github/odmozdzacze/odmozdzacze)
+![License](https://img.shields.io/github/license/odmozdzacze/odmozdzacze)
 ![Framework](https://img.shields.io/badge/built_with-flask-informational)
 
 ## Table of contents
@@ -19,7 +18,7 @@ More info on the main page `templates/index.html` in the code (in polish).
 ## Technologies
 - Python 3.8
 - Flask 1.1.2
-- MongoDB and PyMongo 3.11
+- MongoDB and PyMongo 3.11  
 the rest of depensencies in `requirements.txt`
   
 ## Setup
