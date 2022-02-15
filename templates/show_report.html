@@ -31,20 +31,8 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 20%">ID:</td>
-            <td>{{ reportdict['id'] }}</td>
-        </tr>
-        <tr>
-            <td style="width: 20%">Data zgłoszenia:</td>
-            <td>{{ reportdict['inserttime'] }}</td>
-        </tr>
-        <tr>
-            <td style="width: 20%">Data ostatniej edycji:</td>
-            <td>{{ reportdict['edittime'] }}</td>
-        </tr>
-        <tr>
             <td style="width: 20%">Kategoria:</td>
-            <td>{{ reportdict['category'] }}</td>
+            <td>{{ category_name }}</td>
         </tr>
         <tr>
             <td style="width: 20%">Nazwa:</td>
@@ -53,6 +41,14 @@
         <tr>
             <td style="width: 20%">Opis:</td>
             <td>{{ reportdict['content'] }}</td>
+        </tr>
+        <tr>
+            <td style="width: 20%">Data zgłoszenia:</td>
+            <td>{{ reportdict['inserttime'] }}</td>
+        </tr>
+        <tr>
+            <td style="width: 20%">Data ostatniej edycji:</td>
+            <td>{{ reportdict['edittime'] }}</td>
         </tr>
         <tr>
             <td style="width: 20%">Autor:</td>

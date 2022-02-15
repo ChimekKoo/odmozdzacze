@@ -2,10 +2,13 @@
 {% block title %}Błąd {{ error_code }}{{ error_name }} - {% endblock %}
 {% block content %}
 <div class="w3-container w3-center">
-	<div class="w3-container w3-xxlarge w3-text-dark-gray"><span>Błąd {{ error_code }} {{ error_name }}</span></div>
+	<div class="w3-container w3-xxlarge w3-text-dark-gray">
+		<span>Błąd {{ error_code }} {{ error_name }}</span><br>
+		<small style="font-size: 14px">{{ error_desc }}</small>
+	</div>
 	<br>
 	<div class="w3-container">
-		<a href="https://httpstatuses.com/{{ error_code }}" target="_blank" class="w3-button w3-white w3-text-dark-gray w3-border w3-border-dark-gray w3-round w3-hover-border-blue w3-hover-text-blue w3-hover-white">Więcej informacji tutaj</a>
+		<a href="https://httpstatuses.com/{{ error_code }}" target="_blank" class="w3-button w3-white w3-text-dark-gray w3-border w3-border-dark-gray w3-round w3-hover-border-blue w3-hover-text-blue w3-hover-white">Dowiedz się więcej</a>
 	</div>
 </div>
 {% endblock %}

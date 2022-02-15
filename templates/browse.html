@@ -13,26 +13,26 @@
         <br>
 
         <div class="w3-bar">
-            <select class="w3-bar-item w3-margin-right w3-select w3-round w3-border w3-border-dark-grey" name="category">
-                <option value="" {% if fields["category"] == "" %}selected{% endif %}>Wszystkie kategorie</option>
+            <select class="w3-bar-item w3-margin-right w3-select w3-round w3-border w3-border-dark-grey" name="category" onchange="submit_form()">
+                <option value="" {% if fields["category_id"] == "" %}selected{% endif %}>Wszystkie kategorie</option>
                 {% for category in categories %}
-                    <option value="{{ category }}" {% if fields["category"] == category %}selected{% endif %}>{{ category }}</option>
+                    <option value="{{ category['id'] }}" {% if fields["category_id"] == category['id'] %}selected{% endif %}>{{ category["name"] }}</option>
                 {% endfor %}
             </select>
 
             <div class="w3-bar-item w3-container">
-                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
-                <label class="w3-margin-right">Zweryfikowane</label>
+                <input class="w3-radio" onclick="submit_form()" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
+                <label class="w3-margin-right" onclick="document.getElementById('verified-radio').checked = true; submit_form()">Zweryfikowane</label>
             </div>
 
             <div class="w3-bar-item w3-container">
-                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
-                <label class="w3-margin-right">Wszystkie</label>
+                <input class="w3-radio" onclick="submit_form()" id="all-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
+                <label class="w3-margin-right" onclick="document.getElementById('all-radio').checked = true; submit_form()">Wszystkie</label>
             </div>
 
             <div class="w3-bar-item w3-container">
-                <input class="w3-radio" id="verified-radio" type="radio" name="verified" value="unverified"{% if fields["verified"] == false %}checked{% endif %}>
-                <label class="w3-margin-right">Niezweryfikowane</label>
+                <input class="w3-radio" onclick="submit_form()" id="unverified-radio" type="radio" name="verified" value="unverified"{% if fields["verified"] == false %}checked{% endif %}>
+                <label class="w3-margin-right" onclick="document.getElementById('unverified-radio').checked = true; submit_form()">Niezweryfikowane</label>
             </div>
         </div>
     </form>
@@ -70,7 +70,7 @@
 
     <script type="text/javascript">
         function submit_form() {
-            document.getElementById("search-form").submit;
+            document.getElementById("search-form").submit();
         }
     </script>
 

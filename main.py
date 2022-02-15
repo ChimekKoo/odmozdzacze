@@ -1,3 +1,4 @@
+from unicodedata import category
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
 import werkzeug
@@ -36,8 +37,18 @@ def error_404(e):
             "description": "Resource not found - check url."
         }), 404
     else:
-        return render_template("error.html", error_code="404", error_name="Nie znaleziono", admin=check_if_logged(), redirect_to=redirect_to)
+        return render_template("error.html", error_code="404", error_name="Nie znaleziono", error_desc="Niestety, nie istnieje strona, której szukasz. Sprawdź poprawność adresu URL.", admin=check_if_logged(), redirect_to=redirect_to)
 
+@app.errorhandler(500)
+def error_500(e):
+    redirect_to = url64.encode(request.url)
+    if request.url.startswith(API_ENTRYPOINT):
+        return jsonify({
+            "error": "500 Internal Server Error",
+            "description": "Error in server code - please contact service admin."
+        }), 500
+    else:
+        return render_template("error.html", error_code="500", error_name="Wewnętrzny Błąd Serwera", error_desc="Jest błąd w kodzie serwera. Powiadom administratora strony.", admin=check_if_logged(), redirect_to=redirect_to)
 
 @app.route("/")
 def index():
@@ -66,10 +77,13 @@ def ranking():
 def browse():
     redirect_to = url64.encode(request.url)
 
-    categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+    categories = cursor_to_list(categories_col.find({"accepted": True}))
+    cat_map = {}
+    for x in categories:
+        cat_map[x["id"]] = x["name"]
 
     query = {}
-    fields = {"name": "", "category": "", "verified": ""}
+    fields = {"name": "", "category_id": "", "category_name": "", "verified": ""}
 
     try:
         request.args["name"]
@@ -84,9 +98,10 @@ def browse():
     except KeyError:
         pass
     else:
-        if request.args["category"] in categories:
+        if request.args["category"] in cat_map.keys():
             query["category"] = request.args["category"]
-            fields["category"] = request.args["category"]
+            fields["category_id"] = request.args["category"]
+            fields["category_name"] = cursor_to_list(categories_col.find({"id": request.args["category"]}), "name")[0]
     
     try:
         request.args["verified"]
@@ -105,6 +120,8 @@ def browse():
         fields["verified"] = True
     
     elements = cursor_to_list(reports_col.find(query))
+    for i in range(len(elements)):
+        elements[i]["category"] = cat_map[elements[i]["category"]]
 
     return render_template("browse.html",
                            elements=elements,
@@ -132,7 +149,13 @@ def show_report(reportid):
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
-    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), redirect_to=redirect_to)
+
+    cat_result = cursor_to_list(categories_col.find({"id": result[0]["category"]}))
+    if len(cat_result) != 1:
+        abort(500)
+    category_name = cat_result[0]["name"]
+
+    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), category_name=category_name, redirect_to=redirect_to)
 
 
 @app.route("/verifyreport/<reportid>")
@@ -184,6 +207,7 @@ def delete_report(reportid):
 
 @app.route("/editreport/<reportid>", methods=["GET", "POST"])
 def edit_report(reportid):
+
     redirect_to = url64.encode(request.url)
 
     result = cursor_to_list(reports_col.find({"id": reportid}))
@@ -201,9 +225,13 @@ def edit_report(reportid):
                 except werkzeug.exceptions.BadRequestKeyError:
                     category = ""
                 
-                categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+                categories = cursor_to_list(categories_col.find({"accepted": True}))
+                cat_map = {}
+                for x in categories:
+                    cat_map[x["name"]] = x["id"]
+                categories = cursor_to_list(categories, "name")
 
-                if request.form["category"] == "" \
+                if category == "" \
                  or request.form["name"] == "" \
                  or request.form["content"] == "" \
                  or request.form["email"] == "":
@@ -245,7 +273,7 @@ def edit_report(reportid):
 
                     reports_col.update_one({"id": reportid}, {
                         "$set": {
-                            "category": request.form["category"],
+                            "category": cat_map[request.form["category"]],
                             "name": all_lowercase(request.form["name"]),
                             "content": request.form["content"],
                             "email": request.form["email"],
@@ -266,6 +294,11 @@ def edit_report(reportid):
                 result = cursor_to_list(reports_col.find({"id": reportid}))
                 if len(result) != 1:
                     abort(404)
+                
+                cat_result = cursor_to_list(categories_col.find({"id": result[0]["category"]}))
+                if len(cat_result) != 1:
+                    abort(500)
+                result[0]["category"] = cat_result[0]["name"]
 
                 return render_template("edit_report.html",
                                        categories=categories,
@@ -286,7 +319,11 @@ def report():
         except werkzeug.exceptions.BadRequestKeyError:
             category = ""
 
-        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+        categories = cursor_to_list(categories_col.find({"accepted": True}))
+        cat_map = {}
+        for x in categories:
+            cat_map[x["name"]] = x["id"]
+        categories = cursor_to_list(categories, "name")
 
         if category == ""\
          or request.form["name"] == ""\
@@ -307,7 +344,7 @@ def report():
                                    admin=check_if_logged(),
                                    redirect_to=redirect_to)
 
-        elif category not in cursor_to_list(categories_col.find({}), "name"):
+        elif category not in categories:
             return render_template("report.html",
                                    reportdict=blank_reportdict,
                                    field_error=True,
@@ -335,7 +372,7 @@ def report():
                 "id": report_id,
                 "inserttime": insert_time,
                 "edittime": insert_time,
-                "category": request.form["category"],
+                "category": cat_map[request.form["category"]],
                 "name": all_lowercase(request.form["name"]),
                 "content": request.form["content"],
                 "email": request.form["email"],
@@ -455,6 +492,7 @@ def suggest_category():
                 return render_template("suggest_category_embed.html", field_error=True, admin=check_if_logged())
             
             categories_col.insert_one({
+                "id": generate_id(cursor_to_list(categories_col.find({}), "id")),
                 "name": category_name,
                 "accepted": check_if_logged()
             })

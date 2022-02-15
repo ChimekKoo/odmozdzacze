@@ -3,6 +3,16 @@
 {% block content %}
     <div class="w3-container">
 
+        <div id="modal" class="modal" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+            <div class="modal-content" style="margin: 15% auto; padding: 30px; border: 1px solid #888888; width: 50%">
+                <div style="width: 60%; position: relative; left: 20%; text-align: center">
+                    <p style="font-size: 20px">{% if admin == true %}Dodaj{% else %}Zaproponuj{% endif %} nową kategorię</p>
+                    <br>
+                    <iframe id="suggest_category_iframe" src="{{ url_for('suggest_category', embed='true') }}" style="overflow: hidden" onload="iframeOnload()">Nie można załadować formularza</iframe>
+                </div>
+            </div>
+        </div>
+
         {% if field_error is defined %}
             {% if field_error == True %}
             <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
@@ -33,7 +43,7 @@
 
         <form action="{{ url_for('edit_report', reportid=reportdict['id']) }}" method="post">
 
-            <select name="category" class="w3-select w3-light-gray w3-border" required>
+            <select name="category" id="selectbox" class="w3-select w3-light-gray w3-border" onchange="selectChanged()" required>
                 <option value="" disabled>Kategoria</option>
                 {% for category in categories %}
                     {% if category == reportdict['category'] %}
@@ -42,6 +52,7 @@
                         <option value="{{ category }}">{{ category }}</option>
                     {% endif %}
                 {% endfor %}
+                <option value="suggest_category" id="suggest_categ">+ {% if admin == true %}Dodaj{% else %}Zaproponuj{% endif %} nową kategorię</option>
             </select><br>
 
             <br>
@@ -58,6 +69,46 @@
         </form>
         <script type="text/javascript">
             document.getElementById("content-textarea").value = "{{ reportdict['content'] }}";
+    
+            var modal = document.getElementById("modal");
+            var selectbox = document.getElementById("selectbox");
+            var suggest_category_iframe = document.getElementById("suggest_category_iframe");
+    
+            function iframeOnload() {
+                var iframe_val = suggest_category_iframe.contentWindow.document.body.innerHTML;
+                if (iframe_val == "close") {
+                    closeModal();
+                    alert("Propozycja dodania nowej kategorii została wysłana.");
+                } else if (iframe_val.startsWith("close ")) {
+                    closeModal();
+                    var category_name = iframe_val.slice(5);
+    
+                    var suggest_categ = document.getElementById("suggest_categ");
+                    var suggest_categ_val = suggest_categ.innerHTML;
+                    suggest_categ.remove();
+                    selectbox.innerHTML += ('<option value="' + category_name + '" selected>' + category_name + '</option>');
+                    selectbox.innerHTML += '<option value="suggest_category" id="suggest_categ">' + suggest_categ_val + '</option>';
+                }
+            }
+    
+            function selectChanged() {
+                var selected_value = selectbox.options[selectbox.selectedIndex].value;
+                if (selected_value == "suggest_category") {
+                    openModal();
+                }
+            }
+    
+            function openModal() {
+                modal.style.display = "block";
+            }
+            function closeModal() {
+                modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
         </script>
     </div>
 {% endblock %}

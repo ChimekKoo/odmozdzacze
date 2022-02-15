@@ -1,4 +1,5 @@
 from random import randint, choice, random
+from sre_parse import CATEGORIES
 from main import request, session
 from json import loads as json_load
 import email_validator
