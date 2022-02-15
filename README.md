@@ -23,7 +23,7 @@ More info on the main page `templates/index.html` (unfortunetely in polish).
   
 ## Setup
 **On Ubuntu linux:**  
-Set environment variables `ODMOZDZACZE_MONGODB_URL` to mongodb connection url and `ODMOZDZACZE_SECRETKEY` to session secret key (it can be just a random string)
+Set environment variables `ODMOZDZACZE_MONGODB_URL` to your mongodb connection url and `ODMOZDZACZE_SECRETKEY` to a session secret key (it can be just a random string).
 ```
 git pull git@github.com:odmozdzacze/odmozdzacze
 cd odmozdzacze
