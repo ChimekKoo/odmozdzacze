@@ -66,6 +66,11 @@
         <a href="http://odmozdzacze.tawk.help" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
             <img src="{{ url_for('static', filename='help_icon.png') }}" title="Help center" alt="Help center" class="navbar-img">
         </a>
+        {% if admin == true%}
+        <a href="{{ url_for('admin_panel') }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+            <span>Panel administracyjny</span>
+        </a>
+        {% endif %}
     </nav>
 
     <!-- Background pattern from Toptal Subtle Patterns -->

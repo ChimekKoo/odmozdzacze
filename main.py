@@ -1,3 +1,4 @@
+from tabnanny import check
 from unicodedata import category
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
@@ -520,6 +521,14 @@ def suggest_category():
     else:
         return render_template("suggest_category.html", admin=check_if_logged(), redirect_to=redirect_to)
 
+
+@app.route("/admin")
+def admin_panel():
+    redirect_to = url64.encode(request.url)
+    if check_if_logged():
+        return render_template("admin_panel.html", admin=True, redirect_to=redirect_to)
+    else:
+        return redirect(url_for("login", redirect=redirect_to))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8000", debug=DEBUG)
