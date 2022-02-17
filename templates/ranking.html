@@ -6,15 +6,20 @@
     <div class="w3-container">
         <header class="w3-container w3-xlarge w3-padding-32 w3-center" style="letter-spacing:3px"><b>RANKING ODMÓŻDŻACZY</b></header>
         <br>
-        <table class="w3-table w3-table-all w3-large" style="width: 50%; margin-left: 25%">
-            <thead>
+        <table class="w3-table w3-border w3-bordered w3-large" style="width: 50%; margin-left: 25%">
+            <thead style="background-color: #f9f9f9;">
+                <td>#</td>
                 <td>Nazwa</td>
                 <td>Liczba zgłoszeń</td>
             </thead>
             {% for x in ranking_reports %}
-                <tr>
+                <tr{% if x[1] == 1 %} style="background-color: #bafcb1"{% elif x[1] in [2,3] %} style="background-color: #ddffd9"{% endif %}>
+                    <td>
+                        {% if x[1] in [1,2,3] %}<b>{{ x[1] }}</b>
+                        {% else %}{{ x[1] }}{% endif %}
+                    </td>
                     <td><a href="{{ url_for('browse', name=x[0], verified='verified') }}">{{ x[0] }}</a></td>
-                    <td>{{ x[1] }}</td>
+                    <td>{{ x[2] }}</td>
                 </tr>
             {% endfor %}
         </table>

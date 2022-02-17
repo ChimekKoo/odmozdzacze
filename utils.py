@@ -1,3 +1,4 @@
+from pipes import Template
 from random import randint, choice, random
 from sre_parse import CATEGORIES
 from main import request, session
@@ -5,6 +6,7 @@ from json import loads as json_load
 import email_validator
 from constants import ALPHANUMERIC, API_TOKEN_SIZE
 import bcrypt
+import pandas as pd
 
 def generate_id(ids):
     while True:
@@ -97,3 +99,24 @@ def valid_email(email):
 
 def all_lowercase(s):
     return "".join([x.lower() for x in s])
+
+def rank(count):
+    sr = pd.Series(count.values())
+    sr.index = count.keys()
+    tmp = list(sr.rank().to_dict().items())
+    tmp = sorted(tmp, key=lambda x: x[1], reverse=True)
+
+    result = []
+    counter = 0
+    for i in range(len(tmp)):
+        if i == 0:
+            counter += 1
+            result.append((tmp[i][0], counter, count[tmp[i][0]]))
+            continue
+        if tmp[i-1][1] > tmp[i][1]:
+            counter += 1
+            result.append((tmp[i][0], counter, count[tmp[i][0]]))
+        else:
+            result.append((tmp[i][0], counter, count[tmp[i][0]]))
+
+    return result

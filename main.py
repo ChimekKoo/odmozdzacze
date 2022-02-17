@@ -61,14 +61,14 @@ def ranking():
     
     reports = reports_col.find({"verified": True})
 
-    tmp = {}
+    count = {}
     for reportdict in reports:
         try:
-            tmp[reportdict["name"]] += 1
+            count[reportdict["name"]] += 1
         except KeyError:
-            tmp[reportdict["name"]] = 1
+            count[reportdict["name"]] = 1
     
-    result = sorted(tmp.items(), key=lambda x: x[1], reverse=True)
+    result = rank(count)
 
     return render_template("ranking.html", ranking_reports=result, admin=check_if_logged(), redirect_to=redirect_to)
 
@@ -387,7 +387,14 @@ def report():
 
         reportdict = request_args_to_dict({"category": "", "name": "", "content": "", "email": ""})
 
-        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+        categories = cursor_to_list(categories_col.find({"accepted": True}))
+        cat_map = {"": ""}
+        for x in categories:
+            cat_map[x["id"]] = x["name"]
+        categories = cursor_to_list(categories, "name")
+
+        reportdict["category"] = cat_map[reportdict["category"]]
+
         return render_template("report.html", categories=categories, admin=check_if_logged(), reportdict=reportdict, redirect_to=redirect_to)
 
 
