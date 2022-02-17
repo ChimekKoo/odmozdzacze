@@ -1,5 +1,3 @@
-from tabnanny import check
-from unicodedata import category
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
 import werkzeug
@@ -243,7 +241,7 @@ def edit_report(reportid):
                                            admin=check_if_logged(),
                                            redirect_to=redirect_to)
 
-                elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
+                elif check_profanity(request.form["content"]):
                     return render_template("report.html",
                                            reportdict=blank_reportdict,
                                            profanity_found=True,
@@ -337,7 +335,7 @@ def report():
                                    admin=check_if_logged(),
                                    redirect_to=redirect_to)
 
-        elif check_profanity(request.form["name"]) or check_profanity(request.form["content"]):
+        elif check_profanity(request.form["content"]):
             return render_template("report.html",
                                    reportdict=blank_reportdict,
                                    profanity_found=True,

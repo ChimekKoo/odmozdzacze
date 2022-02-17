@@ -1,12 +1,12 @@
-from pipes import Template
-from random import randint, choice, random
-from sre_parse import CATEGORIES
+from random import randint, choice
 from main import request, session
-from json import loads as json_load
+import json
 import email_validator
 from constants import ALPHANUMERIC, API_TOKEN_SIZE
 import bcrypt
 import pandas as pd
+import aiofiles
+import asyncio
 
 def generate_id(ids):
     while True:
@@ -78,12 +78,11 @@ def request_form_to_dict(available_request_form):
     return request_args
 
 
-def check_profanity(text):
-    with open("static/profanities.json", "r") as profanities_file:
-        raw_data = profanities_file.read()
-        profanities = json_load(raw_data)
-        profanities_file.close()
-
+async def check_profanity(text):
+    async with aiofiles.open("static/profanities.json", mode="r") as f:
+        contents = await f.read()
+        profanities = json.loads(contents)
+    
     for i in profanities:
         if i in text:
             return True
