@@ -5,8 +5,6 @@ import email_validator
 from constants import ALPHANUMERIC, API_TOKEN_SIZE
 import bcrypt
 import pandas as pd
-import aiofiles
-import asyncio
 
 def generate_id(ids):
     while True:
@@ -78,9 +76,9 @@ def request_form_to_dict(available_request_form):
     return request_args
 
 
-async def check_profanity(text):
-    async with aiofiles.open("static/profanities.json", mode="r") as f:
-        contents = await f.read()
+def check_profanity(text):
+    with open("static/profanities.json", mode="r") as f:
+        contents = f.read()
         profanities = json.loads(contents)
     
     for i in profanities:
