@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block title %}Zgłoś - {% endblock %}
-
 {% block content %}
 <div class="w3-container">
 
@@ -60,7 +58,7 @@
         <br>
 
         <input class="w3-input w3-light-gray w3-border w3-round" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" required><br>
-        <textarea id="content-textarea" class="w3-input w3-light-gray w3-border w3-round" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" required></textarea><br>
+        <textarea class="w3-input w3-light-gray w3-border w3-round" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" id="content-textarea" required></textarea><br>
 
         <input class="w3-input w3-light-gray w3-border w3-round" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
         <span class="w3-text">(Podając adres e-mail nie dostaniesz spamu i reklam. Kiedy możliwość założenia konta będzie gotowa, powiadomimy Cię.)</span>
@@ -68,15 +66,14 @@
         <br><br>
 
         <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" style="width: 100px" value="Zgłoś!"><br>
-
     </form>
 
     <script type="text/javascript">
-        document.getElementById("content-textarea").value = "{{ reportdict['content'] }}";
-
         var modal = document.getElementById("modal");
         var selectbox = document.getElementById("selectbox");
         var suggest_category_iframe = document.getElementById("suggest_category_iframe");
+
+        var last_selectbox_val = "";
 
         function iframeOnload() {
             var iframe_val = suggest_category_iframe.contentWindow.document.body.innerHTML;
@@ -99,21 +96,26 @@
             var selected_value = selectbox.options[selectbox.selectedIndex].value;
             if (selected_value == "suggest_category") {
                 openModal();
+            } else {
+                last_selectbox_val = selected_value;
             }
         }
 
         function openModal() {
             modal.style.display = "block";
+            selectbox.value = last_selectbox_val;
         }
+
         function closeModal() {
             modal.style.display = "none";
+            selectbox.value = last_selectbox_val;
         }
+        
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
         }
     </script>
-
 </div>
 {% endblock %}
