@@ -6,3 +6,4 @@ cred.*
 !cred.py
 .DS_Store
 .env
+*.pyc
