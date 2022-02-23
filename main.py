@@ -402,7 +402,7 @@ def login():
 
     try:
         redirect_to = request.args["redirect"]
-    except KeyError: # werkzeug.exceptions.BadRequestKeyError:
+    except KeyError:
         redirect_to = ""
     
     try:
