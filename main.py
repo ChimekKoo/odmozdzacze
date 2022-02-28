@@ -15,18 +15,6 @@ app = Flask(__name__)
 app.secret_key = cred["secret_key"]
 
 
-blank_reportdict = {
-    "id": "",
-    "edittime": "",
-    "inserttime": "",
-    "category": "",
-    "name": "",
-    "content": "",
-    "email": "",
-    "verified": ""
-}
-
-
 @app.errorhandler(404)
 def error_404(e):
     redirect_to = url64.encode(request.url)
@@ -235,7 +223,7 @@ def edit_report(reportid):
                  or request.form["content"] == "" \
                  or request.form["email"] == "":
                     return render_template("report.html",
-                                           reportdict=blank_reportdict,
+                                           reportdict=BLANK_REPORTDICT,
                                            field_error=True,
                                            categories=categories,
                                            admin=check_if_logged(),
@@ -243,7 +231,7 @@ def edit_report(reportid):
 
                 elif check_profanity(request.form["content"]):
                     return render_template("report.html",
-                                           reportdict=blank_reportdict,
+                                           reportdict=BLANK_REPORTDICT,
                                            profanity_found=True,
                                            categories=categories,
                                            admin=check_if_logged(),
@@ -251,7 +239,7 @@ def edit_report(reportid):
 
                 elif category not in categories:
                     return render_template("report.html",
-                                           reportdict=blank_reportdict,
+                                           reportdict=BLANK_REPORTDICT,
                                            field_error=True,
                                            categories=categories,
                                            admin=check_if_logged(),
@@ -260,7 +248,7 @@ def edit_report(reportid):
                 elif not valid_email(request.form["email"]):
                     categories = cursor_to_list(categories_col.find({}), "name")
                     return render_template("report.html",
-                                            reportdict=blank_reportdict,
+                                            reportdict=BLANK_REPORTDICT,
                                             email_error=True,
                                             categories=categories,
                                             admin=check_if_logged(),
@@ -329,7 +317,7 @@ def report():
          or request.form["content"] == ""\
          or request.form["email"] == "":
             return render_template("report.html",
-                                   reportdict=blank_reportdict,
+                                   reportdict=BLANK_REPORTDICT,
                                    categories=categories,
                                    field_error=True,
                                    admin=check_if_logged(),
@@ -337,7 +325,7 @@ def report():
 
         elif check_profanity(request.form["content"]):
             return render_template("report.html",
-                                   reportdict=blank_reportdict,
+                                   reportdict=BLANK_REPORTDICT,
                                    profanity_found=True,
                                    categories=categories,
                                    admin=check_if_logged(),
@@ -345,7 +333,7 @@ def report():
 
         elif category not in categories:
             return render_template("report.html",
-                                   reportdict=blank_reportdict,
+                                   reportdict=BLANK_REPORTDICT,
                                    field_error=True,
                                    categories=categories,
                                    admin=check_if_logged(),
@@ -354,7 +342,7 @@ def report():
         elif not valid_email(request.form["email"]):
             categories = cursor_to_list(categories_col.find({}), "name")
             return render_template("report.html",
-                                   reportdict=blank_reportdict,
+                                   reportdict=BLANK_REPORTDICT,
                                    email_error=True,
                                    categories=categories,
                                    admin=check_if_logged(),
