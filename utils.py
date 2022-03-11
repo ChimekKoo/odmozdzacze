@@ -94,9 +94,6 @@ def valid_email(email):
         return False
     return True
 
-def all_lowercase(s):
-    return "".join([x.lower() for x in s])
-
 def rank(count):
     sr = pd.Series(count.values())
     sr.index = count.keys()

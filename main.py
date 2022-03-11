@@ -207,10 +207,7 @@ def edit_report(reportid):
 
             if request.method == "POST":
 
-                try:
-                    category = request.form["category"]
-                except werkzeug.exceptions.BadRequestKeyError:
-                    category = ""
+                category = request.form.get("category", "")
                 
                 categories = cursor_to_list(categories_col.find({"accepted": True}))
                 cat_map = {}
@@ -229,7 +226,7 @@ def edit_report(reportid):
                                            admin=check_if_logged(),
                                            redirect_to=redirect_to)
 
-                elif check_profanity(request.form["content"]):
+                elif check_profanity(request.form["name"].lower()) or check_profanity(request.form["content"]):
                     return render_template("report.html",
                                            reportdict=BLANK_REPORTDICT,
                                            profanity_found=True,
@@ -261,7 +258,7 @@ def edit_report(reportid):
                     reports_col.update_one({"id": reportid}, {
                         "$set": {
                             "category": cat_map[request.form["category"]],
-                            "name": all_lowercase(request.form["name"]),
+                            "name": request.form["name"].lower(),
                             "content": request.form["content"],
                             "email": request.form["email"],
                             "edittime": edit_time
@@ -301,10 +298,7 @@ def report():
 
     if request.method == "POST":
 
-        try:
-            category = request.form["category"]
-        except werkzeug.exceptions.BadRequestKeyError:
-            category = ""
+        category = request.form.get("category", "")
 
         categories = cursor_to_list(categories_col.find({"accepted": True}))
         cat_map = {}
@@ -323,7 +317,7 @@ def report():
                                    admin=check_if_logged(),
                                    redirect_to=redirect_to)
 
-        elif check_profanity(request.form["content"]):
+        elif check_profanity(request.form["name"].lower()) or check_profanity(request.form["content"]):
             return render_template("report.html",
                                    reportdict=BLANK_REPORTDICT,
                                    profanity_found=True,
@@ -360,7 +354,7 @@ def report():
                 "inserttime": insert_time,
                 "edittime": insert_time,
                 "category": cat_map[request.form["category"]],
-                "name": all_lowercase(request.form["name"]),
+                "name": request.form["name"].lower(),
                 "content": request.form["content"],
                 "email": request.form["email"],
                 "verified": False
@@ -387,11 +381,8 @@ def report():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
-    try:
-        redirect_to = request.args["redirect"]
-    except KeyError:
-        redirect_to = ""
+    
+    redirect_to = request.args.get("redirect", "")
     
     try:
         redirect_to_decoded = url64.decode(redirect_to)
@@ -434,10 +425,8 @@ def login():
 
 @app.route("/logout")
 def logout():
-    try:
-        redirect_to = request.args["redirect"]
-    except KeyError: # werkzeug.exceptions.BadRequestKeyError:
-        redirect_to = ""
+    
+    redirect_to = request.args.get("redirect", "")
     
     try:
         redirect_to_decoded = url64.decode(redirect_to)
