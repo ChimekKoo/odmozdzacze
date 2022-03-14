@@ -1,3 +1,4 @@
+from distutils.command import check
 from flask import Flask, render_template, request, redirect, url_for, abort, session, jsonify
 from datetime import datetime
 import werkzeug
@@ -133,16 +134,21 @@ def contact():
 @app.route("/showreport/<reportid>")
 def show_report(reportid):
     redirect_to = url64.encode(request.url)
+
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
+    
+    reportdict = result[0]
 
     cat_result = cursor_to_list(categories_col.find({"id": result[0]["category"]}))
     if len(cat_result) != 1:
         abort(500)
     category_name = cat_result[0]["name"]
 
-    return render_template("show_report.html", reportdict=result[0], admin=check_if_logged(), category_name=category_name, redirect_to=redirect_to)
+    wait_for_verify = not check_if_logged() and not reportdict["verified"] and request.args.get("justreported") == "true"
+
+    return render_template("show_report.html", reportdict=reportdict, admin=check_if_logged(), category_name=category_name, wait_for_verify=wait_for_verify, redirect_to=redirect_to)
 
 
 @app.route("/verifyreport/<reportid>")
@@ -362,7 +368,7 @@ def report():
 
             categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
-            return redirect(url_for("show_report", reportid=report_id))
+            return redirect(url_for("show_report", reportid=report_id, justreported="true"))
 
     elif request.method == "GET":
 

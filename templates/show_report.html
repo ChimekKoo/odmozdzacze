@@ -15,8 +15,15 @@
         </div>
     </div>
 
+    {% if wait_for_verify == true %}
+    <div class="w3-panel w3-leftbar w3-pale-yellow w3-padding-16">
+        <b>Twoje zgłoszenie zostało wysłane i czeka na weryfikację.</b>
+    </div>
+    <br>
+    {% endif %}
+
     <header class="w3-container w3-xlarge w3-text-black w3-padding w3-margin-bottom">
-        <b>Informacje o zgłoszeniu {{ reportdict['name'] }}&nbsp;</b>
+        <span>Informacje o zgłoszeniu <b>{{ reportdict['name'] }}</b>&nbsp;</span>
         <a href="{{ url_for('report', category=reportdict['category'], name=reportdict['name']) }}" class="w3-button w3-round w3-large w3-white w3-border w3-border-black w3-text-black w3-hover-white w3-hover-border-dark-gray w3-hover-text-dark-gray">Zgłoś to samo!</a>
     </header>
     <table class="w3-table w3-border" style="width:50%">
