@@ -25,7 +25,7 @@ More info on the main page `templates/index.html` (unfortunetely in polish).
 **On Ubuntu linux:**  
 Set environment variables `ODMOZDZACZE_MONGODB_URL` to your mongodb connection url and `ODMOZDZACZE_SECRETKEY` to a session secret key (it can be just a random string).
 ```
-git pull git@github.com:odmozdzacze/odmozdzacze
+git pull git@github.com:ChimekKoo/odmozdzacze
 cd odmozdzacze
 python3 -m venv venv
 source venv/bin/activate
