@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{{ url_for("index", _external=True) }}</loc>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>{{ url_for("report", _external=True) }}</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>{{ url_for("ranking", _external=True) }}</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>{{ url_for("browse", _external=True) }}</loc>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>{{ url_for("developer", _external=True) }}</loc>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>{{ url_for("contact", _external=True) }}</loc>
+        <priority>0.5</priority>
+    </url>
+</urlset>

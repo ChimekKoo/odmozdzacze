@@ -1,10 +1,13 @@
+from flask import session
+from db import admins_col
+
 from random import randint, choice
-from main import request, session
 import json
 import email_validator
 from constants import ALPHANUMERIC, API_TOKEN_SIZE
 import bcrypt
 import pandas as pd
+import requests
 
 def generate_id(ids):
     while True:
@@ -18,18 +21,9 @@ def generate_api_token(tokens):
         if random_token not in tokens:
             return random_token
 
-def check_if_logged():
-    try:
-        session["logged"]
-    except KeyError:
-        logged = False
-    else:
-        if not session["logged"]:
-            logged = False
-        else:
-            logged = True
-    return logged
-
+def is_logged():
+    count = admins_col.count_documents({"login": session.get("login", "")})
+    return count > 0
 
 def hash_psw(psw):
     return bcrypt.hashpw(psw.encode(), bcrypt.gensalt()).decode("utf8")
@@ -50,19 +44,6 @@ def cursor_to_list(cursor, cursor_filter=""):
             array.append(i[cursor_filter])
         return array
 
-
-def request_args_to_dict(available_request_args):
-    request_args = {}
-
-    for request_arg in available_request_args.keys():
-        if request_arg in request.args.keys():
-            request_args[request_arg] = request.args[request_arg]
-        else:
-            request_args[request_arg] = available_request_args[request_arg]
-
-    return request_args
-
-
 def request_form_to_dict(available_request_form):
     request_args = {}
 
@@ -77,7 +58,7 @@ def request_form_to_dict(available_request_form):
 
 
 def check_profanity(text):
-    with open("static/profanities.json", mode="r") as f:
+    with open("app/static/profanities.json", mode="r") as f:
         contents = f.read()
         profanities = json.loads(contents)
     
@@ -114,3 +95,13 @@ def rank(count):
             result.append((tmp[i][0], counter, count[tmp[i][0]]))
 
     return result
+
+def is_human(frontend_resp, secret):
+    if frontend_resp is None: return False
+
+    resp = json.loads(requests.post("https://www.google.com/recaptcha/api/siteverify", data={
+        "secret": secret,
+        "response": frontend_resp
+    }).text)
+
+    return resp["success"]

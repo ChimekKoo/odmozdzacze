@@ -41,7 +41,16 @@
         {% endif %}
     {% endif %}
 
-    <form action="{{ url_for('report') }}" method="post">
+    {% if recaptcha_error is defined %}
+        {% if recaptcha_error == True  %}
+        <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
+            <b>Udowodnij proszę, że nie jesteś robotem (zaznacz pole reCAPTCHA).</b>
+        </div>
+        <br>
+        {% endif %}
+    {% endif %}
+
+    <form action="{{ url_for('report') }}" method="post" id="form">
 
         <select id="selectbox" name="category" class="w3-select w3-light-gray w3-border w3-round" onchange="selectChanged()" required>
             <option value="" disabled selected>Kategoria</option>
@@ -57,18 +66,24 @@
 
         <br>
 
-        <input class="w3-input w3-light-gray w3-border w3-round" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" required><br>
-        <textarea class="w3-input w3-light-gray w3-border w3-round" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" id="content-textarea" required></textarea><br>
+        <input class="w3-input w3-light-gray w3-border w3-round" type="text" name="name" placeholder="Nazwa odmóżdżacza" value="{{ reportdict['name'] }}" autocomplete="off" required><br>
+        <textarea id="content-textarea" class="w3-input w3-light-gray w3-border w3-round" rows="4" name="content" placeholder="Opinia o odmóżdżaczu" id="content-textarea" autocomplete="off" required></textarea><br>
 
         <input class="w3-input w3-light-gray w3-border w3-round" type="email" name="email" placeholder="Adres e-mail" value="{{ reportdict['email'] }}" required><br>
-        <span class="w3-text">(Podając adres e-mail nie dostaniesz spamu i reklam. Kiedy możliwość założenia konta będzie gotowa, powiadomimy Cię.)</span>
+        <span class="w3-text">(Podając adres e-mail nie dostaniesz spamu i reklam. Nie jest on publikowany. Kiedy możliwość założenia konta będzie gotowa, powiadomimy Cię.)</span><br>
 
-        <br><br>
+        <br>
 
-        <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" style="width: 100px" value="Zgłoś!"><br>
+        <div class="g-recaptcha" data-sitekey="{{ recaptcha_sitekey }}"></div>
+
+        <br>
+
+        <input type="submit" class="w3-button w3-large w3-blue w3-hover-blue-grey w3-border w3-border-gray w3-round" style="width: 110px" value="Zgłoś!"><br>
     </form>
 
     <script type="text/javascript">
+        document.getElementById("content-textarea").value = "{{ reportdict['content'] }}";
+
         var modal = document.getElementById("modal");
         var selectbox = document.getElementById("selectbox");
         var suggest_category_iframe = document.getElementById("suggest_category_iframe");
