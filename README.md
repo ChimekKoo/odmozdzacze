@@ -23,7 +23,7 @@ More info on the main page `app/templates/index.html` (in polish).
 - the rest of the dependencies in `requirements.txt`.
   
 ## Setup (only for development, production server is not ready yet)
-**On Ubuntu linux:**  
+**On linux:**  
 Set environment variables (you can use also `.env` file):
 - `ODMOZDZACZE_MONGODB_URL` to your mongodb connection url,
 - `ODMOZDZACZE_SECRET_KEY` to a session secret key (it can be just a random string),
