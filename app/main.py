@@ -112,12 +112,6 @@ def developer():
     return render_template("developer.html", admin=is_logged(), redirect_to=redirect_to)
 
 
-@app.route("/contact")
-def contact():
-    redirect_to = url64.encode(request.url)
-    return render_template("contact.html", admin=is_logged(), redirect_to=redirect_to)
-
-
 @app.route("/showreport/<reportid>")
 def show_report(reportid):
     redirect_to = url64.encode(request.url)

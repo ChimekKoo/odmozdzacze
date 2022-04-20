@@ -20,8 +20,4 @@
         <loc>{{ url_for("developer", _external=True) }}</loc>
         <priority>0.5</priority>
     </url>
-    <url>
-        <loc>{{ url_for("contact", _external=True) }}</loc>
-        <priority>0.5</priority>
-    </url>
 </urlset>
