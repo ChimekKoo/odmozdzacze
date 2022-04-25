@@ -13,41 +13,33 @@
         </div>
     </div>
 
-    {% if field_error is defined %}
-        {% if field_error == True %}
+    {% if field_error is defined and field_error == True %}
         <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
             <b>Nie wybrałeś kategorii lub nie wypełniłeś któregoś pola.</b>
         </div>
-        <br>
-        {% endif %}
     {% endif %}
 
-    {% if email_error is defined %}
-        {% if email_error == True %}
+    {% if email_error is defined and email_error == True %}
         <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
             <b>Niepoprawny adres e-mail.</b>
         </div>
-        <br>
-        {% endif %}
     {% endif %}
 
-    {% if profanity_found is defined %}
-        {% if profanity_found == True  %}
+    {% if profanity_found is defined and profanity_found == True %}
         <div class="w3-panel w3-leftbar w3-pale-yellow w3-padding-16">
             <img src="{{ url_for('static', filename='profanity_icon.png') }}" alt="Obrazek bluźnierstwa" width="40px" height="40px" style="margin-right: 15px">
             <b>Nie możesz tego zgłosić, bo Twój tekst zawiera wulgarne słowa. Popraw go i wyślij jeszcze raz.</b>
         </div>
-        <br>
-        {% endif %}
     {% endif %}
 
-    {% if recaptcha_error is defined %}
-        {% if recaptcha_error == True  %}
+    {% if recaptcha_error is defined and recaptcha_error == True %}
         <div class="w3-panel w3-leftbar w3-pale-red w3-padding-16">
             <b>Udowodnij proszę, że nie jesteś robotem (zaznacz pole reCAPTCHA).</b>
         </div>
-        <br>
-        {% endif %}
+    {% endif %}
+
+    {% if error is defined and error == True %}
+    <br>
     {% endif %}
 
     <form action="{{ url_for('report') }}" method="post" id="form">

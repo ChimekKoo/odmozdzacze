@@ -17,23 +17,26 @@ app.secret_key = cred["secret_key"]
 
 @app.errorhandler(404)
 def error_404(e):
-    redirect_to = url64.encode(request.url)
-    return render_template("error.html", error_code="404", error_name="Nie znaleziono", error_desc="Niestety, nie istnieje strona, której szukasz. Sprawdź poprawność adresu URL.", admin=is_logged(), redirect_to=redirect_to)
+    return render_template("error.html", error_code="404", error_name="Nie znaleziono", error_desc="Niestety, nie istnieje strona, której szukasz. Sprawdź poprawność adresu URL.")
 
 @app.errorhandler(500)
 def error_500(e):
-    redirect_to = url64.encode(request.url)
-    return render_template("error.html", error_code="500", error_name="Wewnętrzny Błąd Serwera", error_desc="Jest błąd w kodzie serwera. Proszę, skontaktuj się ze mną w zakładce Kontakt i opisz w jaki sposób zostałeś tu przekierowany", admin=is_logged(), redirect_to=redirect_to)
+    return render_template("error.html", error_code="500", error_name="Wewnętrzny Błąd Serwera", error_desc="Jest błąd w kodzie serwera. Proszę, skontaktuj się ze mną w zakładce Kontakt i opisz w jaki sposób zostałeś tu przekierowany")
+
+@app.context_processor
+def inject():
+    return dict(
+        admin=is_logged(),
+        redirect_to=url64.encode(request.url)
+    )
 
 @app.route("/")
 def index():
-    redirect_to = url64.encode(request.url)
-    return render_template("index.html", admin=is_logged(), redirect_to=redirect_to)
+    return render_template("index.html")
 
 @app.route("/ranking")
 def ranking():
-    redirect_to = url64.encode(request.url)
-    
+
     reports = reports_col.find({"verified": True})
 
     count = {}
@@ -45,12 +48,11 @@ def ranking():
     
     result = rank(count)
 
-    return render_template("ranking.html", ranking_reports=result, admin=is_logged(), redirect_to=redirect_to)
+    return render_template("ranking.html", ranking_reports=result)
 
 
 @app.route("/browse")
 def browse():
-    redirect_to = url64.encode(request.url)
 
     categories = cursor_to_list(categories_col.find({"accepted": True}))
     cat_map = {}
@@ -98,43 +100,29 @@ def browse():
     for i in range(len(elements)):
         elements[i]["category"] = cat_map[elements[i]["category"]]
 
-    return render_template("browse.html",
-                           elements=elements,
-                           fields=fields,
-                           categories=categories,
-                           admin=is_logged(),
-                           redirect_to=redirect_to)
+    return render_template("browse.html" ,elements=elements, fields=fields, categories=categories)
 
 
 @app.route("/developer")
 def developer():
-    redirect_to = url64.encode(request.url)
-    return render_template("developer.html", admin=is_logged(), redirect_to=redirect_to)
-
+    return render_template("developer.html")
 
 @app.route("/showreport/<reportid>")
 def show_report(reportid):
-    redirect_to = url64.encode(request.url)
-
-    result = cursor_to_list(reports_col.find({"id": reportid}))
-    if len(result) != 1:
+    
+    if reports_col.count_documents({"id": reportid}) == 0:
         abort(404)
     
-    reportdict = result[0]
-
-    cat_result = cursor_to_list(categories_col.find({"id": result[0]["category"]}))
-    if len(cat_result) != 1:
-        abort(500)
-    category_name = cat_result[0]["name"]
+    reportdict = reports_col.find_one({"id": reportid})
+    category_name = categories_col.find_one({"id": reportdict["category"]})["name"]
 
     wait_for_verify = not is_logged() and not reportdict["verified"] and request.args.get("justreported") == "true"
 
-    return render_template("show_report.html", reportdict=reportdict, admin=is_logged(), category_name=category_name, wait_for_verify=wait_for_verify, redirect_to=redirect_to)
+    return render_template("show_report.html", reportdict=reportdict, category_name=category_name, wait_for_verify=wait_for_verify)
 
 
 @app.route("/admin/verifyreport/<reportid>")
 def verify_report(reportid):
-    redirect_to = url64.encode(request.url)
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
@@ -150,7 +138,6 @@ def verify_report(reportid):
 
 @app.route("/admin/unverifyreport/<reportid>")
 def unverify_report(reportid):
-    redirect_to = url64.encode(request.url)
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
         abort(404)
@@ -166,7 +153,6 @@ def unverify_report(reportid):
 
 @app.route("/admin/deletereport/<reportid>")
 def delete_report(reportid):
-    redirect_to = url64.encode(request.url)
 
     result = cursor_to_list(reports_col.find({"id": reportid}))
     if len(result) != 1:
@@ -181,8 +167,6 @@ def delete_report(reportid):
 
 @app.route("/admin/editreport/<reportid>", methods=["GET", "POST"])
 def edit_report(reportid):
-
-    redirect_to = url64.encode(request.url)
     
     if reports_col.count_documents({"id": reportid}) == 0:
         abort(404)
@@ -192,9 +176,10 @@ def edit_report(reportid):
 
     if request.method == "POST":
 
-        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
+        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")        
 
         reportdict = {
+            "id": reportid,
             "name": request.form.get("name", "").lower(),
             "content": request.form.get("content", ""),
             "email": request.form.get("email", ""),
@@ -210,33 +195,33 @@ def edit_report(reportid):
          or reportdict["content"] == ""\
          or reportdict["email"] == "":
             field_error = True
+        
+        if categories_col.count_documents({"name": reportdict["category"]}) == 0:
+            field_error = True
 
         if check_profanity(reportdict["name"]) or check_profanity(reportdict["content"]):
             profanity_found = True
-
-        if categories_col.count_documents({"name": reportdict["category"]}) == 0:
-            field_error = True
         
         if not valid_email(reportdict["email"]):
             email_error = True
         
         if field_error or profanity_found or email_error:
             return render_template(
-                "report.html",
+                "edit_report.html",
                 categories=categories,
                 reportdict=reportdict,
                 field_error=field_error,
                 profanity_found=profanity_found,
                 email_error=email_error,
-                admin=is_logged(),
-                redirect_to=redirect_to
             )
         else:
             edit_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+            category_id = categories_col.find_one({"name": reportdict["category"]})["id"]
+
             reports_col.update_one({"id": reportid}, {
                 "$set": {
-                    "category": reportdict["category"],
+                    "category": category_id,
                     "name": reportdict["name"],
                     "content": reportdict["content"],
                     "email": reportdict["email"],
@@ -261,15 +246,11 @@ def edit_report(reportid):
 
         return render_template("edit_report.html",
                                 categories=categories,
-                                reportdict=reportdict,
-                                admin=is_logged(),
-                                redirect_to=redirect_to)
+                                reportdict=reportdict)
 
 
 @app.route("/report", methods=["GET", "POST"])
 def report():
-
-    redirect_to = url64.encode(request.url)
 
     if request.method == "POST":
 
@@ -313,10 +294,9 @@ def report():
                 profanity_found=profanity_found,
                 email_error=email_error,
                 recaptcha_error=recaptcha_error,
-                admin=is_logged(),
-                redirect_to=redirect_to,
                 recaptcha_sitekey=cred["recaptcha_site_key"],
-                reportdict=reportdict
+                reportdict=reportdict,
+                error=True
             )
         else:
             insert_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -357,12 +337,11 @@ def report():
         else:
             reportdict["category"] = categories_col.find_one({"id": reportdict["category"]})["name"]
 
-        return render_template("report.html", categories=categories, admin=is_logged(), reportdict=reportdict, redirect_to=redirect_to, recaptcha_sitekey=cred["recaptcha_site_key"])
+        return render_template("report.html", categories=categories, reportdict=reportdict, recaptcha_sitekey=cred["recaptcha_site_key"])
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    
     redirect_to = request.args.get("redirect", "")
     
     try:
@@ -379,10 +358,10 @@ def login():
             request.form["login"]
             request.form["password"]
         except werkzeug.exceptions.BadRequestKeyError:
-            return render_template("login.html", field_error=True, admin=is_logged(), redirect_to=redirect_to)
+            return render_template("login.html", field_error=True)
 
         if request.form["login"] == "" or request.form["password"] == "":
-            return render_template("login.html", field_error=True, admin=is_logged(), redirect_to=redirect_to)
+            return render_template("login.html", field_error=True)
         else:
 
             username = request.form["login"]
@@ -394,19 +373,17 @@ def login():
                 session["login"] = username
                 return redirect(redirect_to_decoded)
 
-            return render_template("login.html", data_error=True, admin=is_logged(), redirect_to=redirect_to)
+            return render_template("login.html", data_error=True)
 
     else:
-        print(is_logged())
         if is_logged():
             return redirect(redirect_to_decoded)
         else:
-            return render_template("login.html", admin=is_logged(), redirect_to=redirect_to)
+            return render_template("login.html")
 
 
 @app.route("/logout")
 def logout():
-    
     redirect_to = request.args.get("redirect", "")
     
     try:
@@ -421,13 +398,11 @@ def logout():
         session.pop("login", None)
         return redirect(redirect_to_decoded)
     else:
-        return redirect(url_for("login", redirect_to=redirect_to))
+        return redirect(url_for("login"))
 
 
 @app.route("/newcategory", methods=["GET", "POST"])
 def suggest_category():
-
-    redirect_to = url64.encode(request.url)
 
     try:
         request.args["embed"]
@@ -444,16 +419,16 @@ def suggest_category():
             try:
                 request.form["name"]
             except KeyError:
-                return render_template("suggest_category_embed.html", field_error=True, admin=is_logged())
+                return render_template("suggest_category_embed.html", field_error=True)
             else:
                 category_name = request.form["name"].lower()
             
             if check_profanity(category_name):
-                return render_template("suggest_category_embed.html", profanity_error=True, admin=is_logged())
+                return render_template("suggest_category_embed.html", profanity_error=True)
             elif category_name in cursor_to_list(categories_col.find(), "name"):
-                return render_template("suggest_category_embed.html", already_reported_error=True, admin=is_logged())
+                return render_template("suggest_category_embed.html", already_reported_error=True)
             elif category_name == "":
-                return render_template("suggest_category_embed.html", field_error=True, admin=is_logged())
+                return render_template("suggest_category_embed.html", field_error=True)
             
             categories_col.insert_one({
                 "id": generate_id(cursor_to_list(categories_col.find({}), "id")),
@@ -470,21 +445,20 @@ def suggest_category():
         elif request.method == "GET":
             
             if embed:
-                return render_template("suggest_category_embed.html", admin=is_logged())
+                return render_template("suggest_category_embed.html")
             else:
-                redirect_to = url64.encode(request.url)
-                return render_template("suggest_category.html", admin=is_logged(), redirect_to=redirect_to)
+                
+                return render_template("suggest_category.html")
     else:
-        return render_template("suggest_category.html", admin=is_logged(), redirect_to=redirect_to)
+        return render_template("suggest_category.html")
 
 
 @app.route("/admin")
 def admin_panel():
-    redirect_to = url64.encode(request.url)
     if is_logged():
-        return render_template("admin_panel.html", admin=True, redirect_to=redirect_to)
+        return render_template("admin_panel.html", admin=True)
     else:
-        return redirect(url_for("login", redirect=redirect_to))
+        return redirect(url_for("login", redirect=url64.encode(request.url)))
 
 @app.route("/robots.txt")
 def robots_txt():
