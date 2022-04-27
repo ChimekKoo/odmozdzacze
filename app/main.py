@@ -321,8 +321,6 @@ def report():
 
     elif request.method == "GET":
 
-        categories = cursor_to_list(categories_col.find({"accepted": True}, {"name": 1, "_id": 0}), "name")
-
         category_id = request.args.get("category", "")
 
         reportdict = {
@@ -332,10 +330,10 @@ def report():
             "email": request.args.get("email", "")
         }
 
-        if categories_col.count_documents({"id": category_id, "accepted": True}) == 0:
-            reportdict["category"] = ""
-        else:
-            reportdict["category"] = categories_col.find_one({"id": reportdict["category"]})["name"]
+        if categories_col.count_documents({"id": category_id, "accepted": True}) > 0:
+            reportdict["category"] = categories_col.find_one({"id": category_id})["name"]
+
+        categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
         return render_template("report.html", categories=categories, reportdict=reportdict, recaptcha_sitekey=cred["recaptcha_site_key"])
 
@@ -459,6 +457,10 @@ def admin_panel():
         return render_template("admin_panel.html", admin=True)
     else:
         return redirect(url_for("login", redirect=url64.encode(request.url)))
+
+@app.route("/report-guidelines")
+def report_guidelines():
+    return render_template("report_guidelines.html")
 
 @app.route("/robots.txt")
 def robots_txt():
