@@ -15,6 +15,17 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }
+    </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X0N2XWXTW3"></script>
@@ -39,64 +50,77 @@
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 
-    <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position:fixed">
-        <span>
-            Używając tego serwisu, zgadzasz się na korzystanie z ciasteczek. Wykorzystujemy je w celu gromadzenia danych o odwiedzających wykorzystując usługę Google Analytics
-            oraz umieszczenia widgetu udostępnianego przez Tawk.to. Jeśli nie chcesz żeby strona zapisywała pliki cookie, możesz zmienić to w ustawieniach przeglądarki.
-        </span>
-        <button class="w3-button w3-light-grey w3-border w3-border-black w3-text-black w3-round w3-hover-light-grey w3-hover-border-green w3-hover-text-green" onclick="onClickCloseCookiesPopup()" style="margin-left:20px">Zamknij</button>
-    </div>
-
-    <!-- Background patterns from Toptal Subtle Patterns -->
-
-    <div class="w3-container w3-center w3-border-bottom" style="padding: 20px; background-image:url({{ url_for('static', filename='light_noise_diagonal.png') }})">
-        <a href="{{ url_for('index') }}" title="Odmóżdżacze" style="text-decoration: none; color: black">
-            <div class="w3-container w3-padding">
-                <img src="{{ url_for('static', filename='odmozdzacze_logo.png') }}" alt="Logo Odmóżdżaczy" width="150px" height="150px">
-            </div>
-
-            <header class="w3-container w3-xlarge w3-padding" style="letter-spacing:5px; text-transform: uppercase;">odmóżdżacze</header>
-        </a>
-    </div>
-
-    <nav class="w3-bar" style="font-size: 16px; background-color: #3f91d8">
-        <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:4%"><i class="fa fa-home"></i></a>
-        <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Zgłoś</a>
-        <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Ranking</a>
-        <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
-        <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">API</a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSclAWhzF7YhCIZqWfmHAMA1Y-f6VHzqV2qb75RPhDT4m2ubVQ/viewform?usp=sf_link" title="Kontakt" target="_blank" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Kontakt</a>
-        <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding">
-            <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" class="navbar-img">
-        </a>
-        {% if admin == false %}
-            <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" class="navbar-img">
-            </a>
-        {% else %}
-            <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-                <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" class="navbar-img">
-            </a>
-        {% endif %}
-        {% if admin == true%}
-        <a href="{{ url_for('admin_panel') }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-            <span>Panel administracyjny</span>
-        </a>
-        {% endif %}
-    </nav>
-
-    <!-- Background pattern from Toptal Subtle Patterns -->
-
-    <div class="w3-container" style="width:100%; background-image:url({{ url_for('static', filename='light_grey_terrazzo.png') }})">
-        <div class="w3-container w3-white w3-margin-left w3-margin-Fright w3-padding-32">
-            {% block content %}{% endblock %}
+    {% for banner in banners %}
+        {% if banner['type'] in ['warning', 'alert']%}
+        <div class="w3-container" style="marin: 0; top: 0; left: 0; width: 100%; padding: 5px 10px 5px 10px; text-align: center; font-size: 20px; color: white; background-color: {% if banner['type'] == 'warning'%}#f2c600{% elif banner['type'] == 'alert'%}#ff4242{% endif %}">
+            <span class="material-symbols-outlined">{% if banner['type'] == 'warning'%}warning{% elif banner['type'] == 'alert'%}notification_important{% endif %}</span>
+            <span style="margin-left: 10px;">{{ banner['text'] }}</span>
         </div>
-    </div>
+        {% endif %}
+    {% endfor %}
 
-    <footer class="w3-container w3-padding-32 w3-monospace" style="background-color:#dddddd; text-align:center; margin-top: auto;">
-        <span>&copy; 2020-2022 ChimekKoo and Ynin</span><br>
-        <span>Kod źródłowy na <a href="https://github.com/chimekkoo/odmozdzacze" title="Kod Odmóżdżaczy na GitHub" target="_blank">GitHub</a></span>
-    </footer>
+    <div style="min-height: 100vh; width: 100%; display: flex; flex-direction: column;">
+
+        <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position:fixed">
+            <span>
+                Używając tego serwisu, zgadzasz się na korzystanie z ciasteczek. Wykorzystujemy je w celu gromadzenia danych o odwiedzających wykorzystując usługę Google Analytics
+                oraz umieszczenia widgetu udostępnianego przez Tawk.to. Jeśli nie chcesz żeby strona zapisywała pliki cookie, możesz zmienić to w ustawieniach przeglądarki.
+            </span>
+            <button class="w3-button w3-light-grey w3-border w3-border-black w3-text-black w3-round w3-hover-light-grey w3-hover-border-green w3-hover-text-green" onclick="onClickCloseCookiesPopup()" style="margin-left:20px">Zamknij</button>
+        </div>
+
+        <!-- Background patterns from Toptal Subtle Patterns -->
+
+        <div class="w3-container w3-center w3-border-bottom" style="padding: 20px; background-image:url({{ url_for('static', filename='light_noise_diagonal.png') }})">
+            <a href="{{ url_for('index') }}" title="Odmóżdżacze" style="text-decoration: none; color: black">
+                <div class="w3-container w3-padding">
+                    <img src="{{ url_for('static', filename='odmozdzacze_logo.png') }}" alt="Logo Odmóżdżaczy" width="150px" height="150px">
+                </div>
+
+                <header class="w3-container w3-xlarge w3-padding" style="letter-spacing:5px; text-transform: uppercase;">odmóżdżacze</header>
+            </a>
+        </div>
+
+        <nav class="w3-bar" style="font-size: 16px; background-color: #3f91d8">
+            <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:4%"><i class="fa fa-home"></i></a>
+            <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Zgłoś</a>
+            <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Ranking</a>
+            <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
+            <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">API</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSclAWhzF7YhCIZqWfmHAMA1Y-f6VHzqV2qb75RPhDT4m2ubVQ/viewform?usp=sf_link" title="Kontakt" target="_blank" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Kontakt</a>
+            <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding">
+                <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" class="navbar-img">
+            </a>
+            {% if admin == false %}
+                <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+                    <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" class="navbar-img">
+                </a>
+            {% else %}
+                <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+                    <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" class="navbar-img">
+                </a>
+            {% endif %}
+            {% if admin == true%}
+            <a href="{{ url_for('admin_panel') }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
+                <span>Panel administracyjny</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <!-- Background pattern from Toptal Subtle Patterns -->
+
+        <div class="w3-container" style="width:100%; background-image:url({{ url_for('static', filename='light_grey_terrazzo.png') }})">
+            <div class="w3-container w3-white w3-margin-left w3-margin-Fright w3-padding-32">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+
+        <footer class="w3-container w3-padding-32 w3-monospace" style="background-color:#dddddd; text-align:center; margin-top: auto;">
+            <span>&copy; 2020-2022 ChimekKoo and Ynin</span><br>
+            <span>Kod źródłowy na <a href="https://github.com/chimekkoo/odmozdzacze" title="Kod Odmóżdżaczy na GitHub" target="_blank">GitHub</a></span>
+        </footer>
+
+    </div>
 
     <script type="text/javascript">
         function onClickCloseCookiesPopup() {

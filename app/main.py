@@ -27,7 +27,8 @@ def error_500(e):
 def inject():
     return dict(
         admin=is_logged(),
-        redirect_to=url64.encode(request.url)
+        redirect_to=url64.encode(request.url),
+        banners=get_banners(),
     )
 
 @app.route("/")

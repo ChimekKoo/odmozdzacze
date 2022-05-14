@@ -1,5 +1,5 @@
 from flask import session
-from db import admins_col
+from db import admins_col, banners_col
 
 from random import randint, choice
 import json
@@ -105,3 +105,7 @@ def is_human(frontend_resp, secret):
     }).text)
 
     return resp["success"]
+
+def get_banners():
+    banners = cursor_to_list(banners_col.find())
+    return banners
