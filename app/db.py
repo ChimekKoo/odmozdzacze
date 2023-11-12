@@ -1,9 +1,10 @@
 from pymongo import MongoClient
-from cred import get_cred
+from os import environ
+from dotenv import load_dotenv
 
-cred = get_cred()
+load_dotenv()
 
-mongo_client = MongoClient(cred["mongodb_url"])#, connect=False)
+mongo_client = MongoClient(environ.get("ODMOZDZACZE_MONGODB_URL"))#, connect=False)
 db = mongo_client["odmozdzacze"]
 
 reports_col = db["reports"]

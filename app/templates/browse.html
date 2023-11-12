@@ -19,21 +19,23 @@
                     <option value="{{ category['id'] }}" {% if fields["category_id"] == category['id'] %}selected{% endif %}>{{ category["name"] }}</option>
                 {% endfor %}
             </select>
+            
+            {% if admin == true %}
+                <div class="w3-bar-item w3-container">
+                    <input class="w3-radio" onclick="submit_form()" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
+                    <label class="w3-margin-right" onclick="document.getElementById('verified-radio').checked = true; submit_form()">Zweryfikowane</label>
+                </div>
 
-            <div class="w3-bar-item w3-container">
-                <input class="w3-radio" onclick="submit_form()" id="verified-radio" type="radio" name="verified" value="verified" {% if fields["verified"] == true%}checked{% endif %}>
-                <label class="w3-margin-right" onclick="document.getElementById('verified-radio').checked = true; submit_form()">Zweryfikowane</label>
-            </div>
+                <div class="w3-bar-item w3-container">
+                    <input class="w3-radio" onclick="submit_form()" id="all-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
+                    <label class="w3-margin-right" onclick="document.getElementById('all-radio').checked = true; submit_form()">Wszystkie</label>
+                </div>
 
-            <div class="w3-bar-item w3-container">
-                <input class="w3-radio" onclick="submit_form()" id="all-radio" type="radio" name="verified" value="all" {% if fields["verified"] == "" %}checked{% endif %}>
-                <label class="w3-margin-right" onclick="document.getElementById('all-radio').checked = true; submit_form()">Wszystkie</label>
-            </div>
-
-            <div class="w3-bar-item w3-container">
-                <input class="w3-radio" onclick="submit_form()" id="unverified-radio" type="radio" name="verified" value="unverified"{% if fields["verified"] == false %}checked{% endif %}>
-                <label class="w3-margin-right" onclick="document.getElementById('unverified-radio').checked = true; submit_form()">Niezweryfikowane</label>
-            </div>
+                <div class="w3-bar-item w3-container">
+                    <input class="w3-radio" onclick="submit_form()" id="unverified-radio" type="radio" name="verified" value="unverified"{% if fields["verified"] == false %}checked{% endif %}>
+                    <label class="w3-margin-right" onclick="document.getElementById('unverified-radio').checked = true; submit_form()">Niezweryfikowane</label>
+                </div>
+            {% endif %}
         </div>
     </form>
     <hr>
@@ -60,7 +62,7 @@
     {% else %}
         <div class="w3-container w3-center">
             <div class="w3-container">
-                <img src="{{ url_for('static', filename='not_found_element_icon.png') }}" alt="Obrazek nic nie znaleziono" width="160px" height="160px">
+                <img src="{{ url_for('static', filename='not_found_icon.png') }}" alt="Obrazek nic nie znaleziono" width="160px" height="160px">
             </div>
             <div class="w3-container w3-margin-top">
                 <span class="w3-xlarge w3-text-dark-gray" style="letter-spacing:1px">Nie znaleziono</span>

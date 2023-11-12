@@ -1,11 +1,8 @@
 .idea/
 venv/
 .vscode/
-__pycache__/
-cred.*
-!cred.py
+app/__pycache__/
 .DS_Store
 .env
 *.pyc
-.proj.yml
-.proj.yaml
+uwsgi.log

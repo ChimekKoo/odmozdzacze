@@ -1,11 +1,9 @@
-FROM ubuntu:latest
-
-RUN apt-get update -y && apt-get install -y python3-pip
-
-WORKDIR /app
+FROM python:3.11.2-alpine
 
 COPY . /app
+WORKDIR /app
 
-RUN pip3 install -r requirements.txt
+RUN apk add --no-cache gcc libc-dev linux-headers build-base
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-CMD [ "python3", "app/wsgi.py" ]
+CMD ["uwsgi", "--ini", "uwsgi.ini"]

@@ -2,6 +2,8 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Odmóżdżacze to nietypowa strona, na której można zgłaszać odmóżdżające gry, bajki, filmy czy aplikacje (możesz też poprosić o dodanie innej kategorii). Ma na celu pomóc w unikaniu odmóżdżaczy użytkownikom, którzy chcą dbać o swoje szare komórki :-)">
     <meta name="keywords" content="odmóżdżacze, odmozdzacze, odmóżdżacze.pl, odmozdzacze.pl, głupoty, odmóżdżenie, odmóżdżające, odmóżdżacz, mózg, bajki, filmy, gry, seriale, beznadziejne">
     <meta name="author" content="ChimekKoo">
@@ -11,19 +13,25 @@
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='odmozdzacze_logo.png') }}">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!--<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">-->
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
         .material-symbols-outlined {
-            font-variation-settings:
-            'FILL' 0,
-            'wght' 400,
-            'GRAD' 0,
-            'opsz' 48
+            display: inline-block;
+            vertical-align: middle;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
         }
     </style>
 
@@ -36,16 +44,6 @@
 
     gtag('config', 'G-X0N2XWXTW3');
     </script>
-
-    <script src='https://www.google.com/recaptcha/api.js'></script>
-
-    {% block styles %}{% endblock %}
-
-    <style>
-        img.navbar-img {
-            width: 20px;
-        }
-    </style>
 
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
@@ -81,28 +79,35 @@
             </a>
         </div>
 
-        <nav class="w3-bar" style="font-size: 16px; background-color: #3f91d8">
-            <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:4%"><i class="fa fa-home"></i></a>
-            <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Zgłoś</a>
-            <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Ranking</a>
-            <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Przeglądaj</a>
-            <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">API</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSclAWhzF7YhCIZqWfmHAMA1Y-f6VHzqV2qb75RPhDT4m2ubVQ/viewform?usp=sf_link" title="Kontakt" target="_blank" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">Kontakt</a>
-            <a href="https://discord.gg/AKcwtD2ev8" target="_blank" class="w3-bar-item w3-hover-blue w3-button w3-padding">
-                <img src="{{ url_for('static', filename='discord_logo.png') }}" title="Discord" alt="Discord" class="navbar-img">
+        <nav class="w3-bar" style="font-size: 16px; background-color: #3f91d8; vertical-align: middle;">
+            <a href="{{ url_for('index') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:4%">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'opsz' 20">home</span>
+            </a>
+            <a href="{{ url_for('report') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">
+                Zgłoś
+            </a>
+            <a href="{{ url_for('ranking') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">
+                Ranking
+
+            </a>
+            <a href="{{ url_for('browse') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">
+                Przeglądaj
+            </a>
+            <a href="{{ url_for('developer') }}" class="w3-bar-item w3-button w3-hover-blue w3-padding w3-text-white" style="width:10%">
+                API
             </a>
             {% if admin == false %}
                 <a href="{{ url_for('login', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-                    <img src="{{ url_for('static', filename='user_icon.png') }}" title="Logowanie" alt="Logowanie" class="navbar-img">
+                    <span class="material-symbols-outlined">login</span>
                 </a>
             {% else %}
                 <a href="{{ url_for('logout', redirect=redirect_to) }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-                    <img src="{{ url_for('static', filename='logout_icon.png') }}" title="Wyloguj" alt="Wyloguj" class="navbar-img">
+                    <span class="material-symbols-outlined">logout</span>
                 </a>
             {% endif %}
             {% if admin == true%}
             <a href="{{ url_for('admin_panel') }}" class="w3-bar-item w3-hover-blue w3-button w3-padding w3-right w3-text-white">
-                <span>Panel administracyjny</span>
+                <span class="material-symbols-outlined">admin_panel_settings</span>&nbsp;<span>Panel administracyjny</span>
             </a>
             {% endif %}
         </nav>
@@ -116,8 +121,7 @@
         </div>
 
         <footer class="w3-container w3-padding-32 w3-monospace" style="background-color:#dddddd; text-align:center; margin-top: auto;">
-            <span>&copy; 2020-2022 ChimekKoo and Ynin</span><br>
-            <span>Kod źródłowy na <a href="https://github.com/chimekkoo/odmozdzacze" title="Kod Odmóżdżaczy na GitHub" target="_blank">GitHub</a></span>
+            &copy; 2020-2023 ChimekKoo | <a href="https://github.com/chimekkoo/odmozdzacze" title="Kod Odmóżdżaczy na GitHub" target="_blank">GitHub</a>
         </footer>
 
     </div>
@@ -128,6 +132,8 @@
             popup.style.display = "none";
         }
     </script>
+
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">

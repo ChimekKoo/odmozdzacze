@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  odmozdzacze:
+    image: ghcr.io/chimekkoo/odmozdzacze:latest
+    build: .
+    container_name: odmozdzacze
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    env_file: .env

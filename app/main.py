@@ -3,17 +3,21 @@ from datetime import datetime
 import werkzeug
 import url64
 from urllib.parse import urlparse
+from os import environ
+import random
+import string
+from dotenv import load_dotenv
 
 from constants import *
-from cred import get_cred
 from utils import *
 from db import reports_col, categories_col, admins_col
 
-
-cred = get_cred()
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = cred["secret_key"]
+
+app.secret_key = "".join(random.choice(string.ascii_lowercase+string.ascii_uppercase+string.digits) for _ in range(64))
+app.debug = environ.get("ODMOZDZACZE_DEBUG", False).lower() == "true"
 
 @app.errorhandler(404)
 def error_404(e):
@@ -86,12 +90,16 @@ def browse():
     except KeyError:
         pass
     else:
-        if request.args["verified"] == "verified":
+        if not is_logged():
             query["verified"] = True
             fields["verified"] = True
-        elif request.args["verified"] == "unverified":
-            query["verified"] = False
-            fields["verified"] = False
+        else:
+            if request.args["verified"] == "verified":
+                query["verified"] = True
+                fields["verified"] = True
+            elif request.args["verified"] == "unverified":
+                query["verified"] = False
+                fields["verified"] = False
 
     if query == {}:
         query = {"verified": True}
@@ -101,7 +109,7 @@ def browse():
     for i in range(len(elements)):
         elements[i]["category"] = cat_map[elements[i]["category"]]
 
-    return render_template("browse.html" ,elements=elements, fields=fields, categories=categories)
+    return render_template("browse.html", elements=elements, fields=fields, categories=categories)
 
 
 @app.route("/developer")
@@ -252,6 +260,7 @@ def edit_report(reportid):
 
 @app.route("/report", methods=["GET", "POST"])
 def report():
+    recaptcha_site_key = environ.get("ODMOZDZACZE_RECAPTCHA_SITE_KEY")
 
     if request.method == "POST":
 
@@ -284,7 +293,7 @@ def report():
         if not valid_email(reportdict["email"]):
             email_error = True
             
-        if not is_human(request.form.get("g-recaptcha-response"), cred["recaptcha_secret_key"]):
+        if not is_human(request.form.get("g-recaptcha-response"), environ.get("ODMOZDZACZE_RECAPTCHA_SECRET_KEY")):
             recaptcha_error = True
         
         if field_error or profanity_found or email_error or recaptcha_error:
@@ -295,7 +304,7 @@ def report():
                 profanity_found=profanity_found,
                 email_error=email_error,
                 recaptcha_error=recaptcha_error,
-                recaptcha_sitekey=cred["recaptcha_site_key"],
+                recaptcha_sitekey=recaptcha_site_key,
                 reportdict=reportdict,
                 error=True
             )
@@ -336,7 +345,7 @@ def report():
 
         categories = cursor_to_list(categories_col.find({"accepted": True}), "name")
 
-        return render_template("report.html", categories=categories, reportdict=reportdict, recaptcha_sitekey=cred["recaptcha_site_key"])
+        return render_template("report.html", categories=categories, reportdict=reportdict, recaptcha_sitekey=recaptcha_site_key)
 
 
 @app.route("/login", methods=["GET", "POST"])

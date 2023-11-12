@@ -58,7 +58,7 @@ def request_form_to_dict(available_request_form):
 
 
 def check_profanity(text):
-    with open("app/static/profanities.json", mode="r") as f:
+    with open("static/profanities.json", mode="r") as f:
         contents = f.read()
         profanities = json.loads(contents)
     
