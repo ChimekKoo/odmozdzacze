@@ -16,8 +16,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = "".join(random.choice(string.ascii_lowercase+string.ascii_uppercase+string.digits) for _ in range(64))
-app.debug = environ.get("ODMOZDZACZE_DEBUG", False).lower() == "true"
+app.secret_key = environ.get("ODMOZDZACZE_SESSION_KEY")
+app.debug = environ.get("ODMOZDZACZE_DEBUG", "false").lower() == "true"
 
 @app.errorhandler(404)
 def error_404(e):

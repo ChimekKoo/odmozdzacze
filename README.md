@@ -18,6 +18,7 @@ Create `.env` file with the app configuration (remember to use Google reCAPTCHA 
 ODMOZDZACZE_MONGODB_URL="<mongodb-url>"
 ODMOZDZACZE_RECAPTCHA_SITE_KEY="<recaptcha-site-key>"
 ODMOZDZACZE_RECAPTCHA_SECRET_KEY="<recaptcha-secret-key>"
+ODMOZDZACZE_SESSION_KEY="<random-alphanumeric-string>"
 ```
 (Optional:) Build the image yourself (e.g. if your CPU architecture is not supported by the prebuilt image, see [here](https://ghcr.io/chimekkoo/odmozdzacze))
 ```
@@ -29,7 +30,7 @@ docker compose up -d
 ```
 
 ## Development (linux/mac)
-Clone the repo and write the `.env` file, as above.
+Clone the repo and write the `.env` file as above, but add `ODMOZDZACZE_DEBUG=true` option.
 Then:
 ```
 python3 -m venv venv
