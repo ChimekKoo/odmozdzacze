@@ -4,8 +4,7 @@ import werkzeug
 import url64
 from urllib.parse import urlparse
 from os import environ
-import random
-import string
+import collections
 from dotenv import load_dotenv
 
 from constants import *
@@ -44,14 +43,19 @@ def ranking():
 
     reports = reports_col.find({"verified": True})
 
-    count = {}
+    counts = collections.defaultdict(int)
     for reportdict in reports:
-        try:
-            count[reportdict["name"]] += 1
-        except KeyError:
-            count[reportdict["name"]] = 1
-    
-    result = rank(count)
+        counts[reportdict["name"]] += 1
+
+    ranks = collections.defaultdict(list)
+    for name, cnt in counts.items():
+        ranks[cnt].append(name)
+    ranks = sorted(list(ranks.items()), reverse=True)
+
+    result = []
+    for place, names in ranks:
+        for name in names:
+            result.append([name, place, counts[name]])
 
     return render_template("ranking.html", ranking_reports=result)
 
