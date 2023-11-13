@@ -9,6 +9,11 @@ jobs:
     permissions:
       packages: write
     steps:
+      - name: Lowercase repo name
+        run: |
+          echo "REPONAME_LOWER=${REPONAME,,}" >>${GITHUB_ENV}
+        env:
+          REPONAME: '${{ github.repository }}'
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -27,4 +32,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ github.repository }}:latest
+          tags: ${{ REPONAME_LOWER }}:latest
