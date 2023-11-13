@@ -1,5 +1,7 @@
 FROM python:3.11.2-alpine
 
+LABEL org.opencontainers.image.source="https://github.com/ChimekKoo/odmozdzacze"
+
 COPY . /app
 WORKDIR /app
 
