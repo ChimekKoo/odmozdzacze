@@ -35,22 +35,12 @@
         }
     </style>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X0N2XWXTW3"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-X0N2XWXTW3');
-    </script>
-
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 
     {% for banner in banners %}
         {% if banner['type'] in ['warning', 'alert']%}
-        <div class="w3-container" style="marin: 0; top: 0; left: 0; width: 100%; padding: 5px 10px 5px 10px; text-align: center; font-size: 20px; color: white; background-color: {% if banner['type'] == 'warning'%}#f2c600{% elif banner['type'] == 'alert'%}#ff4242{% endif %}">
+        <div class="w3-container" style="margin: 0; top: 0; left: 0; width: 100%; padding: 5px 10px 5px 10px; text-align: center; font-size: 20px; color: white; background-color: {% if banner['type'] == 'warning'%}#f2c600{% elif banner['type'] == 'alert'%}#ff4242{% endif %}">
             <span class="material-symbols-outlined">{% if banner['type'] == 'warning'%}warning{% elif banner['type'] == 'alert'%}notification_important{% endif %}</span>
             <span style="margin-left: 10px;">{{ banner['text'] }}</span>
         </div>
@@ -59,17 +49,14 @@
 
     <div style="min-height: 100vh; width: 100%; display: flex; flex-direction: column;">
 
-        <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position:fixed">
-            <span>
-                Używając tego serwisu, zgadzasz się na korzystanie z ciasteczek. Wykorzystujemy je w celu gromadzenia danych o odwiedzających wykorzystując usługę Google Analytics
-                oraz umieszczenia widgetu udostępnianego przez Tawk.to. Jeśli nie chcesz żeby strona zapisywała pliki cookie, możesz zmienić to w ustawieniach przeglądarki.
-            </span>
-            <button class="w3-button w3-light-grey w3-border w3-border-black w3-text-black w3-round w3-hover-light-grey w3-hover-border-green w3-hover-text-green" onclick="onClickCloseCookiesPopup()" style="margin-left:20px">Zamknij</button>
+        <div class="w3-container w3-light-grey w3-text-black w3-padding" id="cookies-popup" style="position: fixed; width: 100%">
+            <span>Logując się na tej stronie zgadzasz się na wykorzystanie plików cookie. Jeśli nie chcesz, żeby były zapisywane, nie loguj się.</span>
+            <button class="w3-button w3-light-grey w3-border w3-border-black w3-text-black w3-round w3-hover-light-grey w3-hover-border-green w3-hover-text-green" onclick="onClickCloseCookiesPopup()" style="margin-left: 8px; padding: 4px; width: 72px">Zamknij</button>
         </div>
 
         <!-- Background patterns from Toptal Subtle Patterns -->
 
-        <div class="w3-container w3-center w3-border-bottom" style="padding: 20px; background-image:url({{ url_for('static', filename='light_noise_diagonal.png') }})">
+        <div class="w3-container w3-center w3-border-bottom" style="padding: 20px; background-image: url({{ url_for('static', filename='light_noise_diagonal.png') }})">
             <a href="{{ url_for('index') }}" title="Odmóżdżacze" style="text-decoration: none; color: black">
                 <div class="w3-container w3-padding">
                     <img src="{{ url_for('static', filename='odmozdzacze_logo.png') }}" alt="Logo Odmóżdżaczy" width="150px" height="150px">
@@ -134,20 +121,6 @@
     </script>
 
     <script src='https://www.google.com/recaptcha/api.js'></script>
-
-    <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/5f8b0f9cf91e4b431ec54b7f/default';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-        })();
-    </script>
-    <!--End of Tawk.to Script-->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
