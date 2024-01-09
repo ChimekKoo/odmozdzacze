@@ -40,4 +40,3 @@ cd app
 # [ write some code... ]
 python3 wsgi.py
 ```
-
