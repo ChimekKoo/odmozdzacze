@@ -2,8 +2,28 @@ services:
     app:
         image: ghcr.io/chimekkoo/odmozdzacze:latest
         build: .
-        restart: unless-stopped
+        restart: always
         ports:
-            - 8000:8000
-        env_file:
-            - .env
+            - "8000:8000"
+        networks:
+            - odmozdzacze
+        environment:
+            ODMOZDZACZE_MONGODB_URL: "mongodb://root:pass@db:27017/?retryWrites=true&w=majority"
+        env_file: .env
+        depends_on:
+            - db
+    db:
+        image: mongo:bionic
+        restart: always
+        networks:
+            - odmozdzacze
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: pass
+        volumes:
+            - ./db:/data/db
+
+networks:
+    odmozdzacze:
+        name: odmozdzacze
+        driver: bridge

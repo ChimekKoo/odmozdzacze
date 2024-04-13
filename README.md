@@ -15,7 +15,6 @@ cd odmozdzacze
 ```
 Create `.env` file with the app configuration (remember to use Google reCAPTCHA v2, not v3):
 ```
-ODMOZDZACZE_MONGODB_URL="<mongodb-url>"
 ODMOZDZACZE_RECAPTCHA_SITE_KEY="<recaptcha-site-key>"
 ODMOZDZACZE_RECAPTCHA_SECRET_KEY="<recaptcha-secret-key>"
 ODMOZDZACZE_SESSION_KEY="<random-alphanumeric-string>"
